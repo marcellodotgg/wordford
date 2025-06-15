@@ -3,12 +3,17 @@ use axum::{extract::{Path, State}, http::StatusCode, response::IntoResponse, rou
 use sqlx::Error::RowNotFound;
 use crate::{content::{content_repository::ContentRepository, content_service::ContentService}, AppState};
 
-pub fn routes() -> Router<Arc<AppState>> {
-    Router::new().route("/sitemap", get(get_sitemap))
-        .route("/page/{page_name}", get(get_content))
+fn api_routes() -> Router<Arc<AppState>> {
+    Router::new()
+        .route("/sitemap", get(get_sitemap_json))
+        .route("/page/{page_name}", get(get_content_json))
 }
 
-async fn get_content(State(state): State<Arc<AppState>>, Path(page_name): Path<String>) -> impl IntoResponse {
+pub fn routes() -> Router<Arc<AppState>> {
+    Router::new().nest("/api", api_routes())
+}
+
+async fn get_content_json(State(state): State<Arc<AppState>>, Path(page_name): Path<String>) -> impl IntoResponse {
     let content_repository = ContentRepository::new(state.db.clone());
     let content_service = ContentService::new(content_repository);
 
@@ -19,7 +24,7 @@ async fn get_content(State(state): State<Arc<AppState>>, Path(page_name): Path<S
     }
 }
 
-async fn get_sitemap(State(state): State<Arc<AppState>>) -> impl IntoResponse {
+async fn get_sitemap_json(State(state): State<Arc<AppState>>) -> impl IntoResponse {
     let content_repository = ContentRepository::new(state.db.clone());
     let content_service = ContentService::new(content_repository);
 

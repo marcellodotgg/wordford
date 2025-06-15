@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-
+use sqlx::Error::RowNotFound;
 use sqlx::SqlitePool;
 use crate::content::Content;
 
@@ -25,7 +25,7 @@ impl ContentRepository {
         .await?;
 
         if content.is_empty() {
-            return Err(sqlx::Error::RowNotFound);
+            return Err(RowNotFound);
         }
 
         Ok(content.into_iter().map(|c| (c.id, c.content)).collect())
