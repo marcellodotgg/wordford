@@ -1,5 +1,6 @@
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
 
 pub mod content_repository;
 pub mod content_routes;
@@ -15,14 +16,14 @@ pub struct ContentDAO {
     updated_at: Option<NaiveDateTime>,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, ToSchema)]
 pub struct Content {
     pub page_name: String,
     pub content_id: String,
     pub content: String,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, ToSchema)]
 pub struct CreateContentRequest {
     pub content_id: String,
     pub content: String,

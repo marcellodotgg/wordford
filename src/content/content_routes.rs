@@ -1,3 +1,4 @@
+use crate::content::Content;
 use crate::{
     AppState,
     content::{
@@ -32,7 +33,19 @@ pub fn routes() -> Router<Arc<AppState>> {
     Router::new().nest("/api", api_routes())
 }
 
-async fn get_content_json(
+#[utoipa::path(
+    get,
+    path = "/api/page/{page_name}",
+    responses(
+        (status = 200, description = "Get content as JSON", body = Content),
+        (status = 404, description = "Not found")
+    ),
+    params(
+        ("page_name" = String, Path, description = "Page name")
+    ),
+    tag = "Content"
+)]
+pub async fn get_content_json(
     State(state): State<Arc<AppState>>,
     Path(page_name): Path<String>,
 ) -> impl IntoResponse {
@@ -46,7 +59,20 @@ async fn get_content_json(
     }
 }
 
-async fn get_content_html(
+#[utoipa::path(
+    get,
+    path = "/api/page/{page_name}/{content_id}",
+    responses(
+        (status = 200, description = "Get content as HTML", body = String),
+        (status = 404, description = "Not found")
+    ),
+    params(
+        ("page_name" = String, Path, description = "Page name"),
+        ("content_id" = String, Path, description = "Content ID")
+    ),
+    tag = "Content"
+)]
+pub async fn get_content_html(
     State(state): State<Arc<AppState>>,
     Path((page_name, content_id)): Path<(String, String)>,
 ) -> impl IntoResponse {
@@ -63,7 +89,15 @@ async fn get_content_html(
     }
 }
 
-async fn get_sitemap_json(State(state): State<Arc<AppState>>) -> impl IntoResponse {
+#[utoipa::path(
+    get,
+    path = "/api/sitemap",
+    responses(
+        (status = 200, description = "Get sitemap as JSON", body = [String])
+    ),
+    tag = "Content"
+)]
+pub async fn get_sitemap_json(State(state): State<Arc<AppState>>) -> impl IntoResponse {
     let content_repository = ContentRepository::new(state.db.clone());
     let content_service = ContentService::new(content_repository);
 
@@ -73,7 +107,20 @@ async fn get_sitemap_json(State(state): State<Arc<AppState>>) -> impl IntoRespon
     }
 }
 
-async fn create_content(
+#[utoipa::path(
+    put,
+    path = "/api/page/{page_name}",
+    request_body = CreateContentRequest,
+    responses(
+        (status = 201, description = "Content created", body = Content),
+        (status = 409, description = "Conflict")
+    ),
+    params(
+        ("page_name" = String, Path, description = "Page name")
+    ),
+    tag = "Content"
+)]
+pub async fn create_content(
     State(state): State<Arc<AppState>>,
     Path(page_name): Path<String>,
     Json(request): Json<CreateContentRequest>,
@@ -99,7 +146,20 @@ async fn create_content(
     }
 }
 
-async fn delete_content(
+#[utoipa::path(
+    delete,
+    path = "/api/page/{page_name}/{content_id}",
+    responses(
+        (status = 204, description = "Content deleted"),
+        (status = 404, description = "Not found")
+    ),
+    params(
+        ("page_name" = String, Path, description = "Page name"),
+        ("content_id" = String, Path, description = "Content ID")
+    ),
+    tag = "Content"
+)]
+pub async fn delete_content(
     State(state): State<Arc<AppState>>,
     Path((page_name, content_id)): Path<(String, String)>,
 ) -> impl IntoResponse {
