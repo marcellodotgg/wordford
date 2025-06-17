@@ -30,13 +30,13 @@ pub fn routes() -> Router<Arc<AppState>> {
 
 #[utoipa::path(
     get,
-    path = "/api/page/{page_name}",
+    path = "/api/content/{id}",
     responses(
         (status = 200, description = "Get content as JSON", body = Content),
         (status = 404, description = "Not found")
     ),
     params(
-        ("page_name" = String, Path, description = "Page name")
+        ("id" = String, Path, description = "The content ID")
     ),
     tag = "Content"
 )]
@@ -56,14 +56,11 @@ pub async fn find_by_id(
 
 #[utoipa::path(
     put,
-    path = "/api/page/{page_name}",
+    path = "/api/content",
     request_body = CreateContentRequest,
     responses(
         (status = 201, description = "Content created", body = Content),
         (status = 409, description = "Conflict")
-    ),
-    params(
-        ("page_name" = String, Path, description = "Page name")
     ),
     tag = "Content"
 )]
@@ -94,14 +91,13 @@ pub async fn create_content(
 
 #[utoipa::path(
     delete,
-    path = "/api/page/{page_name}/{content_id}",
+    path = "/api/content/{id}",
     responses(
         (status = 204, description = "Content deleted"),
         (status = 404, description = "Not found")
     ),
     params(
-        ("page_name" = String, Path, description = "Page name"),
-        ("content_id" = String, Path, description = "Content ID")
+        ("id" = String, Path, description = "The content ID"),
     ),
     tag = "Content"
 )]

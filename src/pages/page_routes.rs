@@ -21,6 +21,18 @@ pub fn routes() -> Router<Arc<AppState>> {
     Router::new().nest("/api", api_routes())
 }
 
+#[utoipa::path(
+    get,
+    path = "/api/pages/{id}",
+    responses(
+        (status = 200, description = "Get page by ID", body = String),
+        (status = 404, description = "Not found")
+    ),
+    params(
+        ("id" = String, Path, description = "Page ID")
+    ),
+    tag = "Pages"
+)]
 pub async fn find_page_by_id(
     State(state): State<Arc<AppState>>,
     Path(id): Path<String>,
@@ -35,6 +47,15 @@ pub async fn find_page_by_id(
     }
 }
 
+#[utoipa::path(
+    put,
+    path = "/api/pages",
+    responses(
+        (status = 201, description = "Page created"),
+        (status = 500, description = "Internal server error")
+    ),
+    tag = "Pages"
+)]
 pub async fn create_page(
     State(state): State<Arc<AppState>>,
     Path(app_id): Path<String>,
@@ -48,6 +69,18 @@ pub async fn create_page(
     }
 }
 
+#[utoipa::path(
+    delete,
+    path = "/api/pages/{id}",
+    responses(
+        (status = 204, description = "Page deleted"),
+        (status = 404, description = "Not found")
+    ),
+    params(
+        ("id" = String, Path, description = "Page ID")
+    ),
+    tag = "Pages"
+)]
 pub async fn delete_page(
     State(state): State<Arc<AppState>>,
     Path(id): Path<String>,
