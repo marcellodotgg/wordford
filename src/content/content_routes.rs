@@ -1,4 +1,5 @@
 use crate::content::Content;
+use crate::pages::page_routes::find_page_by_id;
 use crate::{
     AppState,
     content::{
@@ -6,11 +7,12 @@ use crate::{
         content_service::ContentService,
     },
 };
+use axum::routing::put;
 use axum::{
     Json, Router,
     extract::{Path, State},
     http::StatusCode,
-    response::{Html, IntoResponse},
+    response::IntoResponse,
     routing::get,
 };
 use sqlx::Error::{self, RowNotFound};
@@ -18,15 +20,8 @@ use std::sync::Arc;
 
 fn api_routes() -> Router<Arc<AppState>> {
     Router::new()
-        .route("/sitemap", get(get_sitemap_json))
-        .route(
-            "/page/{page_name}",
-            get(get_content_json).put(create_content),
-        )
-        .route(
-            "/page/{page_name}/{content_id}",
-            get(get_content_html).delete(delete_content),
-        )
+        .route("/content", put(create_content))
+        .route("/content/{id}", get(find_page_by_id).delete(delete_content))
 }
 
 pub fn routes() -> Router<Arc<AppState>> {
@@ -45,64 +40,16 @@ pub fn routes() -> Router<Arc<AppState>> {
     ),
     tag = "Content"
 )]
-pub async fn get_content_json(
+pub async fn find_by_id(
     State(state): State<Arc<AppState>>,
-    Path(page_name): Path<String>,
+    Path(id): Path<String>,
 ) -> impl IntoResponse {
     let content_repository = ContentRepository::new(state.db.clone());
     let content_service = ContentService::new(content_repository);
 
-    match content_service.get_content(&page_name).await {
+    match content_service.find_by_id(&id).await {
         Ok(content) => Json(content).into_response(),
         Err(RowNotFound) => StatusCode::NOT_FOUND.into_response(),
-        Err(_) => StatusCode::INTERNAL_SERVER_ERROR.into_response(),
-    }
-}
-
-#[utoipa::path(
-    get,
-    path = "/api/page/{page_name}/{content_id}",
-    responses(
-        (status = 200, description = "Get content as HTML", body = String),
-        (status = 404, description = "Not found")
-    ),
-    params(
-        ("page_name" = String, Path, description = "Page name"),
-        ("content_id" = String, Path, description = "Content ID")
-    ),
-    tag = "Content"
-)]
-pub async fn get_content_html(
-    State(state): State<Arc<AppState>>,
-    Path((page_name, content_id)): Path<(String, String)>,
-) -> impl IntoResponse {
-    let content_repository = ContentRepository::new(state.db.clone());
-    let content_service = ContentService::new(content_repository);
-
-    match content_service.get_content(&page_name).await {
-        Ok(content) => match content.get(&content_id) {
-            Some(content_data) => Html(content_data.clone()).into_response(),
-            None => StatusCode::NOT_FOUND.into_response(),
-        },
-        Err(RowNotFound) => StatusCode::NOT_FOUND.into_response(),
-        Err(_) => StatusCode::INTERNAL_SERVER_ERROR.into_response(),
-    }
-}
-
-#[utoipa::path(
-    get,
-    path = "/api/sitemap",
-    responses(
-        (status = 200, description = "Get sitemap as JSON", body = [String])
-    ),
-    tag = "Content"
-)]
-pub async fn get_sitemap_json(State(state): State<Arc<AppState>>) -> impl IntoResponse {
-    let content_repository = ContentRepository::new(state.db.clone());
-    let content_service = ContentService::new(content_repository);
-
-    match content_service.get_sitemap().await {
-        Ok(sitemap) => Json(sitemap).into_response(),
         Err(_) => StatusCode::INTERNAL_SERVER_ERROR.into_response(),
     }
 }
@@ -122,13 +69,12 @@ pub async fn get_sitemap_json(State(state): State<Arc<AppState>>) -> impl IntoRe
 )]
 pub async fn create_content(
     State(state): State<Arc<AppState>>,
-    Path(page_name): Path<String>,
-    Json(request): Json<CreateContentRequest>,
+    Path(id): Path<String>,
 ) -> impl IntoResponse {
     let content_repository = ContentRepository::new(state.db.clone());
     let content_service = ContentService::new(content_repository);
 
-    match content_service.create_content(&page_name, request).await {
+    match content_service.create_content(&id).await {
         Ok(content) => (StatusCode::CREATED, Json(content)).into_response(),
         Err(Error::Database(db_err)) => {
             if db_err.is_unique_violation() {
@@ -161,15 +107,12 @@ pub async fn create_content(
 )]
 pub async fn delete_content(
     State(state): State<Arc<AppState>>,
-    Path((page_name, content_id)): Path<(String, String)>,
+    Path(id): Path<String>,
 ) -> impl IntoResponse {
     let content_repository = ContentRepository::new(state.db.clone());
     let content_service = ContentService::new(content_repository);
 
-    match content_service
-        .delete_content(&page_name, &content_id)
-        .await
-    {
+    match content_service.delete_content(&id).await {
         Ok(_) => StatusCode::NO_CONTENT.into_response(),
         Err(RowNotFound) => StatusCode::NOT_FOUND.into_response(),
         Err(_) => StatusCode::INTERNAL_SERVER_ERROR.into_response(),

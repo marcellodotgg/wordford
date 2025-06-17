@@ -10,9 +10,7 @@ use wordford::{AppState, content::content_routes};
 #[derive(OpenApi)]
 #[openapi(
     paths(
-        content_routes::get_content_json,
-        content_routes::get_content_html,
-        content_routes::get_sitemap_json,
+        content_routes::find_by_id,
         content_routes::create_content,
         content_routes::delete_content,
     ),

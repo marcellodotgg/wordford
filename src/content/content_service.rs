@@ -1,6 +1,4 @@
-use std::collections::HashMap;
-
-use crate::content::{Content, CreateContentRequest, content_repository::ContentRepository};
+use crate::content::content_repository::ContentRepository;
 
 pub struct ContentService {
     content_repository: ContentRepository,
@@ -11,34 +9,17 @@ impl ContentService {
         ContentService { content_repository }
     }
 
-    pub async fn get_content(
-        &self,
-        page_name: &str,
-    ) -> Result<HashMap<String, String>, sqlx::Error> {
-        self.content_repository.get_content(page_name).await
+    pub async fn find_by_id(&self, id: &str) -> Result<Option<String>, sqlx::Error> {
+        self.content_repository.find_by_id(id).await
     }
 
-    pub async fn get_sitemap(&self) -> Result<Vec<String>, sqlx::Error> {
-        self.content_repository.get_sitemap().await
-    }
-
-    pub async fn create_content(
-        &self,
-        page_name: &str,
-        request: CreateContentRequest,
-    ) -> Result<Content, sqlx::Error> {
+    pub async fn create_content(&self, page_id: &str) -> Result<String, sqlx::Error> {
         self.content_repository
-            .create_content(&page_name, request)
+            .create_content(page_id, "sample")
             .await
     }
 
-    pub async fn delete_content(
-        &self,
-        page_name: &str,
-        content_id: &str,
-    ) -> Result<(), sqlx::Error> {
-        self.content_repository
-            .delete_content(page_name, content_id)
-            .await
+    pub async fn delete_content(&self, content_id: &str) -> Result<(), sqlx::Error> {
+        self.content_repository.delete_content(content_id).await
     }
 }
