@@ -16,7 +16,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_orgs_slug ON orgs(slug);
 -- set up apps
 CREATE TABLE apps (
     id TEXT PRIMARY KEY,
-    org_id UUID NOT NULL,
+    org_id TEXT NOT NULL,
     name TEXT NOT NULL,
     description TEXT,
     url TEXT,
@@ -29,7 +29,7 @@ CREATE TABLE apps (
 -- set up pages
 CREATE TABLE pages (
     id TEXT PRIMARY KEY,
-    app_id UUID NOT NULL,
+    app_id TEXT NOT NULL,
     name TEXT NOT NULL,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -37,10 +37,13 @@ CREATE TABLE pages (
     UNIQUE (app_id, name)
 );
 
+-- create an index for (app_id, name) to optimize lookups
+CREATE UNIQUE INDEX IF NOT EXISTS idx_pages_appid_name ON pages(app_id, name);
+
 -- set up content {
 CREATE TABLE content (
     id TEXT PRIMARY KEY,
-    page_id UUID NOT NULL,
+    page_id TEXT NOT NULL,
     name TEXT NOT NULL,
     body TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
