@@ -1,6 +1,6 @@
 -- set up orgs
 CREATE TABLE orgs (
-    id UUID PRIMARY KEY,
+    id TEXT PRIMARY KEY,
     slug TEXT NOT NULL UNIQUE,
     name TEXT NOT NULL,
     description TEXT,

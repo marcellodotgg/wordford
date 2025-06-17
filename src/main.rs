@@ -5,7 +5,7 @@ use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 use wordford::content::Content;
 use wordford::content::CreateContentRequest;
-use wordford::{AppState, content::content_routes, pages::page_routes};
+use wordford::{AppState, content::content_routes, orgs::org_routes, pages::page_routes};
 
 #[derive(OpenApi)]
 #[openapi(
@@ -16,6 +16,9 @@ use wordford::{AppState, content::content_routes, pages::page_routes};
         page_routes::find_page_by_id,
         page_routes::create_page,
         page_routes::delete_page,
+        org_routes::find_by_id,
+        org_routes::create_org,
+        org_routes::delete_org
     ),
     components(schemas(Content, CreateContentRequest)),
     tags(
