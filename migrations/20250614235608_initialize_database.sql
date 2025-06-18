@@ -22,7 +22,7 @@ CREATE TABLE apps (
     url TEXT,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (org_id) REFERENCES orgs(id),
+    FOREIGN KEY (org_id) REFERENCES orgs(id) ON DELETE CASCADE,
     UNIQUE (org_id, name)
 );
 
@@ -33,7 +33,7 @@ CREATE TABLE pages (
     name TEXT NOT NULL,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (app_id) REFERENCES apps(id),
+    FOREIGN KEY (app_id) REFERENCES apps(id) ON DELETE CASCADE,
     UNIQUE (app_id, name)
 );
 
@@ -48,7 +48,7 @@ CREATE TABLE content (
     body TEXT NOT NULL,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (page_id) REFERENCES pages(id),
+    FOREIGN KEY (page_id) REFERENCES pages(id) ON DELETE CASCADE,
     UNIQUE (page_id, name)
 );
 

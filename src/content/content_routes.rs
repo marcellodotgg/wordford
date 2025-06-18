@@ -1,5 +1,4 @@
 use crate::content::{Content, NewContentRequest};
-use crate::pages::page_routes::find_page_by_id;
 use crate::{
     AppState,
     content::{content_repository::ContentRepository, content_service::ContentService},
@@ -17,7 +16,7 @@ use std::sync::Arc;
 fn api_routes() -> Router<Arc<AppState>> {
     Router::new()
         .route("/content", put(create_content))
-        .route("/content/{id}", get(find_page_by_id).delete(delete_content))
+        .route("/content/{id}", get(find_by_id).delete(delete_content))
 }
 
 pub fn routes() -> Router<Arc<AppState>> {
