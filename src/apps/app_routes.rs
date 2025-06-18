@@ -7,15 +7,16 @@ use axum::{
     extract::{Path, State},
     http::StatusCode,
     response::IntoResponse,
+    routing::get,
 };
 use std::sync::Arc;
 
 fn api_routes() -> Router<Arc<AppState>> {
-    Router::new()
+    Router::new().route("/{id}", get(find_by_id))
 }
 
 pub fn routes() -> Router<Arc<AppState>> {
-    Router::new().nest("/api", api_routes())
+    Router::new().nest("/api/apps", api_routes())
 }
 
 #[utoipa::path(

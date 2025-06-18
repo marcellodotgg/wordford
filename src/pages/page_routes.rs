@@ -13,13 +13,13 @@ use std::sync::Arc;
 
 fn api_routes() -> Router<Arc<AppState>> {
     Router::new()
-        .route("/pages", put(create_page))
-        .route("/pages/{id}", get(find_page_by_id).delete(delete_page))
-        .route("/pages/{id}/content", get(get_content_for_page))
+        .route("/", put(create_page))
+        .route("/{id}", get(find_page_by_id).delete(delete_page))
+        .route("/{id}/content", get(get_content_for_page))
 }
 
 pub fn routes() -> Router<Arc<AppState>> {
-    Router::new().nest("/api", api_routes())
+    Router::new().nest("/api/pages", api_routes())
 }
 
 #[utoipa::path(

@@ -15,7 +15,7 @@ fn api_routes() -> Router<Arc<AppState>> {
 }
 
 pub fn routes() -> Router<Arc<AppState>> {
-    Router::new().nest("/api", api_routes())
+    Router::new().nest("/api/orgs", api_routes())
 }
 
 #[utoipa::path(
