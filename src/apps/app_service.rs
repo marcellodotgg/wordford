@@ -1,4 +1,7 @@
-use crate::apps::app_repository::AppRepository;
+use crate::{
+    apps::{AppWithPages, app_repository::AppRepository},
+    pages::Page,
+};
 
 pub struct AppService {
     app_repository: AppRepository,
@@ -9,8 +12,12 @@ impl AppService {
         AppService { app_repository }
     }
 
-    pub async fn find_by_id(&self, app_id: &str) -> Result<Option<String>, sqlx::Error> {
+    pub async fn find_by_id(&self, app_id: &str) -> Result<AppWithPages, sqlx::Error> {
         self.app_repository.find_by_id(app_id).await
+    }
+
+    pub async fn find_pages_by_app_id(&self, app_id: &str) -> Result<Vec<Page>, sqlx::Error> {
+        self.app_repository.find_pages_by_app_id(app_id).await
     }
 
     pub async fn create_app(&self, name: &str) -> Result<String, sqlx::Error> {

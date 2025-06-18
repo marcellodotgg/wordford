@@ -31,7 +31,7 @@ pub fn routes() -> Router<Arc<AppState>> {
         (status = 404, description = "Not found")
     ),
     params(
-        ("id" = String, Path, description = "The content ID")
+        ("id" = i64, Path, description = "The content ID")
     ),
     tag = "Content"
 )]
@@ -94,7 +94,7 @@ pub async fn create_content(
         (status = 404, description = "Not found")
     ),
     params(
-        ("id" = String, Path, description = "The content ID"),
+        ("id" = i64, Path, description = "The content ID"),
     ),
     tag = "Content"
 )]

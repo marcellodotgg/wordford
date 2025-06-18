@@ -21,6 +21,7 @@ use wordford::{
         org_routes::create_org,
         org_routes::delete_org,
         app_routes::find_by_id,
+        app_routes::find_pages_by_app_id,
         app_routes::create_app,
         app_routes::delete_app,
     ),

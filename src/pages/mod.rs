@@ -28,4 +28,4 @@ pub struct NewPageRequest {
     pub name: String,
 }
 
-pub type PageContent = HashMap<String, String>;
+type PageContent = HashMap<String, String>;

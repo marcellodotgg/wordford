@@ -26,7 +26,7 @@ pub fn routes() -> Router<Arc<AppState>> {
         (status = 404, description = "Not found")
     ),
     params(
-        ("id" = String, Path, description = "Org ID")
+        ("id" = i64, Path, description = "Org ID")
     ),
     tag = "Orgs"
 )]
@@ -71,7 +71,7 @@ pub async fn create_org(State(state): State<Arc<AppState>>) -> impl IntoResponse
         (status = 404, description = "Not found")
     ),
     params(
-        ("id" = String, Path, description = "Org ID")
+        ("id" = i64, Path, description = "Org ID")
     ),
     tag = "Orgs"
 )]

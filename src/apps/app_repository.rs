@@ -1,5 +1,10 @@
 use sqlx::SqlitePool;
 
+use crate::{
+    apps::{App, AppWithPages},
+    pages::Page,
+};
+
 pub struct AppRepository {
     db: SqlitePool,
 }
@@ -9,17 +14,68 @@ impl AppRepository {
         AppRepository { db }
     }
 
-    pub async fn find_by_id(&self, id: &str) -> Result<Option<String>, sqlx::Error> {
+    pub async fn find_by_id(&self, id: &str) -> Result<AppWithPages, sqlx::Error> {
         let app = sqlx::query!(
             r#"
-            SELECT name FROM apps WHERE id = ?
+            SELECT * FROM apps WHERE id = ?
             "#,
             id
         )
-        .fetch_optional(&self.db)
+        .fetch_one(&self.db)
         .await?;
 
-        Ok(app.map(|a| a.name)) // TODO: should return an App struct instead
+        let pages = sqlx::query!(
+            r#"
+            SELECT * FROM pages WHERE app_id = ?
+            "#,
+            app.id
+        )
+        .fetch_all(&self.db)
+        .await?;
+
+        Ok(AppWithPages {
+            app: App {
+                id: app.id,
+                org_id: app.org_id,
+                name: app.name,
+                description: app.description.unwrap_or("".to_string()),
+                url: app.url.unwrap_or("".to_string()),
+                created_at: app.created_at.to_string(),
+                updated_at: app.updated_at.to_string(),
+            },
+            pages: pages
+                .into_iter()
+                .map(|p| crate::pages::Page {
+                    id: p.id.expect("id should not be null"),
+                    app_id: p.app_id,
+                    name: p.name,
+                    created_at: p.created_at.to_string(),
+                    updated_at: p.updated_at.to_string(),
+                })
+                .collect(),
+        })
+    }
+
+    pub async fn find_pages_by_app_id(&self, app_id: &str) -> Result<Vec<Page>, sqlx::Error> {
+        let pages = sqlx::query!(
+            r#"
+            SELECT * FROM pages WHERE app_id = ?
+            "#,
+            app_id
+        )
+        .fetch_all(&self.db)
+        .await?;
+
+        Ok(pages
+            .into_iter()
+            .map(|p| Page {
+                id: p.id.expect("id should not be null"),
+                app_id: p.app_id,
+                name: p.name,
+                created_at: p.created_at.to_string(),
+                updated_at: p.updated_at.to_string(),
+            })
+            .collect())
     }
 
     pub async fn create_app(&self, name: &str) -> Result<String, sqlx::Error> {
