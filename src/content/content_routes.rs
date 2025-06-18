@@ -70,17 +70,19 @@ pub async fn create_content(
 
     match content_service.create_content(request).await {
         Ok(content) => (StatusCode::CREATED, Json(content)).into_response(),
+        Err(Error::Database(db_err)) if db_err.is_unique_violation() => (
+            StatusCode::CONFLICT,
+            "that name is already in use for this page.",
+        )
+            .into_response(),
+        Err(Error::Database(db_err)) if db_err.is_foreign_key_violation() => (
+            StatusCode::CONFLICT,
+            "the page_id does not exist or is invalid.",
+        )
+            .into_response(),
         Err(Error::Database(db_err)) => {
-            if db_err.is_unique_violation() {
-                (
-                    StatusCode::CONFLICT,
-                    "that name is already in use for this page.",
-                )
-                    .into_response()
-            } else {
-                eprintln!("Database error: {}", db_err);
-                StatusCode::INTERNAL_SERVER_ERROR.into_response()
-            }
+            eprintln!("Database error: {}", db_err);
+            StatusCode::INTERNAL_SERVER_ERROR.into_response()
         }
         Err(_) => StatusCode::INTERNAL_SERVER_ERROR.into_response(),
     }
