@@ -1,3 +1,4 @@
+use sqlx::Error::RowNotFound;
 use sqlx::SqlitePool;
 
 use crate::pages::{NewPageRequest, Page, PageContent, PageWithContent};
@@ -66,6 +67,10 @@ impl PageRepository {
         )
         .fetch_all(&self.db)
         .await?;
+
+        if rows.is_empty() {
+            return Err(RowNotFound);
+        }
 
         let rows = rows.into_iter().map(|row| (row.name, row.body)).collect();
 

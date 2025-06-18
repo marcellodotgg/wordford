@@ -69,6 +69,7 @@ pub async fn get_content_for_page(
 
     match page_service.get_content_for_page(&id).await {
         Ok(content) => Json(content).into_response(),
+        Err(sqlx::Error::RowNotFound) => StatusCode::NOT_FOUND.into_response(),
         Err(_) => StatusCode::INTERNAL_SERVER_ERROR.into_response(),
     }
 }
