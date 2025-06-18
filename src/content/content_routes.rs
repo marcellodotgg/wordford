@@ -1,11 +1,8 @@
-use crate::content::Content;
+use crate::content::{Content, NewContentRequest};
 use crate::pages::page_routes::find_page_by_id;
 use crate::{
     AppState,
-    content::{
-        CreateContentRequest, content_repository::ContentRepository,
-        content_service::ContentService,
-    },
+    content::{content_repository::ContentRepository, content_service::ContentService},
 };
 use axum::routing::put;
 use axum::{
@@ -57,7 +54,7 @@ pub async fn find_by_id(
 #[utoipa::path(
     put,
     path = "/api/content",
-    request_body = CreateContentRequest,
+    request_body = NewContentRequest,
     responses(
         (status = 201, description = "Content created", body = Content),
         (status = 409, description = "Conflict")
@@ -66,18 +63,18 @@ pub async fn find_by_id(
 )]
 pub async fn create_content(
     State(state): State<Arc<AppState>>,
-    Path(id): Path<String>,
+    Json(request): Json<NewContentRequest>,
 ) -> impl IntoResponse {
     let content_repository = ContentRepository::new(state.db.clone());
     let content_service = ContentService::new(content_repository);
 
-    match content_service.create_content(&id).await {
+    match content_service.create_content(request).await {
         Ok(content) => (StatusCode::CREATED, Json(content)).into_response(),
         Err(Error::Database(db_err)) => {
             if db_err.is_unique_violation() {
                 (
                     StatusCode::CONFLICT,
-                    "content_id is already in use for this page.",
+                    "that name is already in use for this page.",
                 )
                     .into_response()
             } else {
@@ -103,7 +100,7 @@ pub async fn create_content(
 )]
 pub async fn delete_content(
     State(state): State<Arc<AppState>>,
-    Path(id): Path<String>,
+    Path(id): Path<i64>,
 ) -> impl IntoResponse {
     let content_repository = ContentRepository::new(state.db.clone());
     let content_service = ContentService::new(content_repository);

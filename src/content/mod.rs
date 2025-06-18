@@ -1,4 +1,3 @@
-use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
@@ -6,25 +5,19 @@ pub mod content_repository;
 pub mod content_routes;
 pub mod content_service;
 
-#[derive(Serialize, Deserialize, Debug)]
-pub struct ContentDAO {
-    id: i64,
-    page_name: String,
-    content: String,
-    content_id: String,
-    created_at: Option<NaiveDateTime>,
-    updated_at: Option<NaiveDateTime>,
-}
-
 #[derive(Serialize, Deserialize, Debug, ToSchema)]
 pub struct Content {
-    pub page_name: String,
-    pub content_id: String,
-    pub content: String,
+    id: i64,
+    page_id: i64,
+    name: String,
+    body: String,
+    created_at: String,
+    updated_at: String,
 }
 
 #[derive(Serialize, Deserialize, Debug, ToSchema)]
-pub struct CreateContentRequest {
-    pub content_id: String,
-    pub content: String,
+pub struct NewContentRequest {
+    pub page_id: i64,
+    pub name: String,
+    pub body: String,
 }

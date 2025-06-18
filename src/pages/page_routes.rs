@@ -1,6 +1,6 @@
 use crate::{
     AppState,
-    pages::{page_repository, page_service::PageService},
+    pages::{NewPageRequest, page_repository::PageRepository, page_service::PageService},
 };
 use axum::{
     Json, Router,
@@ -15,6 +15,7 @@ fn api_routes() -> Router<Arc<AppState>> {
     Router::new()
         .route("/pages", put(create_page))
         .route("/pages/{id}", get(find_page_by_id).delete(delete_page))
+        .route("/pages/{id}/content", get(get_content_for_page))
 }
 
 pub fn routes() -> Router<Arc<AppState>> {
@@ -29,15 +30,15 @@ pub fn routes() -> Router<Arc<AppState>> {
         (status = 404, description = "Not found")
     ),
     params(
-        ("id" = String, Path, description = "Page ID")
+        ("id" = i64, Path, description = "Page ID")
     ),
     tag = "Pages"
 )]
 pub async fn find_page_by_id(
     State(state): State<Arc<AppState>>,
-    Path(id): Path<String>,
+    Path(id): Path<i64>,
 ) -> impl IntoResponse {
-    let page_repository = page_repository::PageRepository::new(state.db.clone());
+    let page_repository = PageRepository::new(state.db.clone());
     let page_service = PageService::new(page_repository);
 
     match page_service.find_by_id(&id).await {
@@ -48,8 +49,34 @@ pub async fn find_page_by_id(
 }
 
 #[utoipa::path(
+    get,
+    path = "/api/pages/{id}/content",
+    responses(
+        (status = 200, description = "Get content by Page ID", body = String),
+        (status = 404, description = "Not found")
+    ),
+    params(
+        ("id" = i64, Path, description = "Page ID")
+    ),
+    tag = "Pages"
+)]
+pub async fn get_content_for_page(
+    State(state): State<Arc<AppState>>,
+    Path(id): Path<i64>,
+) -> impl IntoResponse {
+    let page_repository = PageRepository::new(state.db.clone());
+    let page_service = PageService::new(page_repository);
+
+    match page_service.get_content_for_page(&id).await {
+        Ok(content) => Json(content).into_response(),
+        Err(_) => StatusCode::INTERNAL_SERVER_ERROR.into_response(),
+    }
+}
+
+#[utoipa::path(
     put,
     path = "/api/pages",
+    request_body = NewPageRequest,
     responses(
         (status = 201, description = "Page created"),
         (status = 500, description = "Internal server error")
@@ -58,12 +85,12 @@ pub async fn find_page_by_id(
 )]
 pub async fn create_page(
     State(state): State<Arc<AppState>>,
-    Path(app_id): Path<String>,
+    Json(request): Json<NewPageRequest>,
 ) -> impl IntoResponse {
-    let page_repository = page_repository::PageRepository::new(state.db.clone());
+    let page_repository = PageRepository::new(state.db.clone());
     let page_service = PageService::new(page_repository);
 
-    match page_service.create_page(&app_id, "home").await {
+    match page_service.create_page(request).await {
         Ok(_) => StatusCode::CREATED.into_response(),
         Err(_) => StatusCode::INTERNAL_SERVER_ERROR.into_response(),
     }
@@ -77,7 +104,7 @@ pub async fn create_page(
         (status = 404, description = "Not found")
     ),
     params(
-        ("id" = String, Path, description = "Page ID")
+        ("id" = i64, Path, description = "Page ID")
     ),
     tag = "Pages"
 )]
@@ -85,7 +112,7 @@ pub async fn delete_page(
     State(state): State<Arc<AppState>>,
     Path(id): Path<String>,
 ) -> impl IntoResponse {
-    let page_repository = page_repository::PageRepository::new(state.db.clone());
+    let page_repository = PageRepository::new(state.db.clone());
     let page_service = PageService::new(page_repository);
 
     match page_service.delete_page(&id).await {
