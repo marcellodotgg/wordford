@@ -7,12 +7,12 @@ pub mod content_service;
 
 #[derive(Serialize, Deserialize, Debug, ToSchema)]
 pub struct Content {
-    id: i64,
-    page_id: i64,
-    name: String,
-    body: String,
-    created_at: String,
-    updated_at: String,
+    pub id: i64,
+    pub page_id: i64,
+    pub name: String,
+    pub body: String,
+    pub created_at: String,
+    pub updated_at: String,
 }
 
 #[derive(Serialize, Deserialize, Debug, ToSchema)]

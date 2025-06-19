@@ -1,7 +1,10 @@
 use sqlx::Error::RowNotFound;
 use sqlx::SqlitePool;
 
-use crate::pages::{NewPageRequest, Page, PageContent, PageWithContent};
+use crate::{
+    content::Content,
+    pages::{NewPageRequest, Page, PageContent, PageWithContent},
+};
 
 pub struct PageRepository {
     db: SqlitePool,
@@ -13,47 +16,43 @@ impl PageRepository {
     }
 
     pub async fn find_by_id(&self, id: &i64) -> Result<Option<PageWithContent>, sqlx::Error> {
-        let rows = sqlx::query!(
+        let page = sqlx::query!(
             r#"
-            SELECT 
-            p.id as "id!",
-            p.app_id as "app_id!",
-            p.name as "name!",
-            p.created_at as "created_at!",
-            p.updated_at as "updated_at!",
-            c.name as "content_name?",
-            c.body as "content_body?"
-            FROM pages p
-            LEFT JOIN content c ON p.id = c.page_id
-            WHERE p.id = ?
+            SELECT * FROM pages WHERE id = ?
+            "#,
+            id
+        )
+        .fetch_one(&self.db)
+        .await?;
+
+        let content = sqlx::query!(
+            r#"
+            SELECT * FROM content WHERE page_id = ?
             "#,
             id
         )
         .fetch_all(&self.db)
         .await?;
 
-        if rows.is_empty() {
-            return Ok(None);
-        }
-
-        let first = &rows[0];
-        let mut content = std::collections::HashMap::new();
-
-        for row in &rows {
-            if let (Some(name), Some(body)) = (row.content_name.clone(), row.content_body.clone()) {
-                content.insert(name, body);
-            }
-        }
-
         Ok(Some(PageWithContent {
             page: Page {
-                id: first.id,
-                app_id: first.app_id,
-                name: first.name.clone(),
-                created_at: first.created_at.to_string(),
-                updated_at: first.updated_at.to_string(),
+                id: page.id,
+                app_id: page.app_id,
+                name: page.name,
+                created_at: page.created_at.to_string(),
+                updated_at: page.updated_at.to_string(),
             },
-            content,
+            content: content
+                .into_iter()
+                .map(|c| Content {
+                    id: c.id.expect("id should not be null"),
+                    page_id: c.page_id,
+                    name: c.name,
+                    body: c.body,
+                    created_at: c.created_at.to_string(),
+                    updated_at: c.updated_at.to_string(),
+                })
+                .collect(),
         }))
     }
 
