@@ -59,6 +59,25 @@ nav ul li img {
   border: 1px solid #252525;
 }
 
+nav ul input[type="text"] {
+  border: 1px solid #aaa;
+  background: #f1f1f1;
+  padding: 6px 8px;
+  border-radius: 4px;
+  width: 190px;
+  transition-duration: 300ms;
+  transition-property: width;
+  transition-timing-function: ease-out;
+}
+
+nav ul input[type="text"]:focus {
+  width: 230px;
+}
+
+nav ul input[type="text"]::placeholder {
+  color: #444;
+}
+
 main {
   display: flex;
   flex-direction: column;
