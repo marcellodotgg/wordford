@@ -23,14 +23,40 @@ p {
 }
 
 nav {
-  display: flex;
-  padding: 8px 0;
   width: 100%;
+  padding: 8px 0;
   border-bottom: 1px solid #999;
+}
+
+nav .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 nav h1 {
   font-size: 1.25rem;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin: 0;
+  line-height: 0;
+}
+
+nav ul li a:link,
+nav ul li a:active,
+nav ul li a:visited {
+  text-decoration: underline;
+  color: rgb(0, 81, 255);
+}
+
+nav ul li img {
+  border-radius: 100%;
+  border: 1px solid #252525;
 }
 
 main {
