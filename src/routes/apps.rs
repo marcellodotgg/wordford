@@ -1,7 +1,3 @@
-use crate::{
-    AppState,
-    api::apps::{app_repository::AppRepository, app_service::AppService},
-};
 use axum::{
     Json, Router,
     extract::{Path, State},
@@ -10,6 +6,8 @@ use axum::{
     routing::get,
 };
 use std::sync::Arc;
+
+use crate::{AppState, repositories::apps::AppRepository, services::apps::AppService};
 
 fn api_routes() -> Router<Arc<AppState>> {
     Router::new()

@@ -1,8 +1,3 @@
-use crate::api::content::{Content, NewContentRequest};
-use crate::{
-    AppState,
-    api::content::{content_repository::ContentRepository, content_service::ContentService},
-};
 use axum::routing::put;
 use axum::{
     Json, Router,
@@ -12,6 +7,11 @@ use axum::{
     routing::get,
 };
 use std::sync::Arc;
+
+use crate::AppState;
+use crate::models::content::{Content, NewContentRequest};
+use crate::repositories::content::ContentRepository;
+use crate::services::content::ContentService;
 
 fn api_routes() -> Router<Arc<AppState>> {
     Router::new()

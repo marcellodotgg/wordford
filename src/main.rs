@@ -11,24 +11,23 @@ use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 use wordford::{
     AppState,
-    api::{apps::app_routes, content::content_routes, pages::page_routes},
-    routes::frontend,
+    routes::{self, homepage},
 };
 
 #[derive(OpenApi)]
 #[openapi(
     paths(
-        content_routes::find_by_id,
-        content_routes::create_content,
-        content_routes::delete_content,
-        page_routes::find_page_by_id,
-        page_routes::get_content_for_page,
-        page_routes::create_page,
-        page_routes::delete_page,
-        app_routes::find_by_id,
-        app_routes::find_pages_by_app_id,
-        app_routes::create_app,
-        app_routes::delete_app,
+        routes::content::find_by_id,
+        routes::content::create_content,
+        routes::content::delete_content,
+        routes::pages::find_page_by_id,
+        routes::pages::get_content_for_page,
+        routes::pages::create_page,
+        routes::pages::delete_page,
+        routes::apps::find_by_id,
+        routes::apps::find_pages_by_app_id,
+        routes::apps::create_app,
+        routes::apps::delete_app,
     ),
     tags(
         (name = "Content Management", description = "Content management endpoints"),
@@ -56,10 +55,10 @@ async fn main() {
     // Initialize the application state and routes
     let app = Router::new()
         .merge(serve_static)
-        .merge(frontend::routes())
-        .merge(content_routes::routes())
-        .merge(page_routes::routes())
-        .merge(app_routes::routes())
+        .merge(homepage::routes())
+        .merge(routes::content::routes())
+        .merge(routes::pages::routes())
+        .merge(routes::apps::routes())
         .merge(SwaggerUi::new("/swagger-ui").url("/api-docs/openapi.json", ApiDoc::openapi()))
         .with_state(state);
 

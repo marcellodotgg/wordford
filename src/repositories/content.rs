@@ -1,6 +1,6 @@
 use sqlx::SqlitePool;
 
-use crate::api::content::{Content, NewContentRequest};
+use crate::models::content::{Content, NewContentRequest};
 
 pub struct ContentRepository {
     db: SqlitePool,

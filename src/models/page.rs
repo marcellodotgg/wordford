@@ -3,11 +3,7 @@ use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
-use crate::api::content::Content;
-
-pub mod page_repository;
-pub mod page_routes;
-pub mod page_service;
+use crate::models::content::Content;
 
 #[derive(Deserialize, Serialize, ToSchema, Debug)]
 pub struct Page {
@@ -30,4 +26,4 @@ pub struct NewPageRequest {
     pub name: String,
 }
 
-type PageContent = HashMap<String, String>;
+pub type PageContent = HashMap<String, String>;

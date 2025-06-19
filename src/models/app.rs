@@ -1,11 +1,7 @@
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
-use crate::api::pages::Page;
-
-pub mod app_repository;
-pub mod app_routes;
-pub mod app_service;
+use crate::models::page::Page;
 
 #[derive(Deserialize, Serialize, Debug, ToSchema)]
 pub struct App {

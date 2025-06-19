@@ -1,6 +1,6 @@
 use crate::{
-    AppState,
-    api::pages::{NewPageRequest, page_repository::PageRepository, page_service::PageService},
+    AppState, models::page::NewPageRequest, repositories::pages::PageRepository,
+    services::pages::PageService,
 };
 use axum::{
     Json, Router,

@@ -1,5 +1,6 @@
-use crate::api::pages::{
-    NewPageRequest, Page, PageContent, PageWithContent, page_repository::PageRepository,
+use crate::{
+    models::page::{NewPageRequest, Page, PageContent, PageWithContent},
+    repositories::pages::PageRepository,
 };
 
 pub struct PageService {

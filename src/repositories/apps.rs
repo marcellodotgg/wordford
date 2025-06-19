@@ -1,8 +1,8 @@
 use sqlx::SqlitePool;
 
-use crate::{
-    api::apps::{App, AppWithPages},
-    api::pages::Page,
+use crate::models::{
+    app::{App, AppWithPages},
+    page::Page,
 };
 
 pub struct AppRepository {
