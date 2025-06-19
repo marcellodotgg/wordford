@@ -1,9 +1,19 @@
-use axum::Router;
+use axum::{
+    Router,
+    http::{HeaderValue, header::CACHE_CONTROL},
+};
 use sqlx::SqlitePool;
 use std::{env, sync::Arc};
+use tera::Tera;
+use tower_http::services::ServeDir;
+use tower_http::set_header::SetResponseHeaderLayer;
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
-use wordford::{AppState, apps::app_routes, content::content_routes, pages::page_routes};
+use wordford::{
+    AppState,
+    api::{apps::app_routes, content::content_routes, pages::page_routes},
+    routes::frontend,
+};
 
 #[derive(OpenApi)]
 #[openapi(
@@ -30,13 +40,23 @@ struct ApiDoc;
 async fn main() {
     dotenvy::dotenv().ok(); // load environment variables
 
+    let tera = Arc::new(Tera::new("templates/**/*").unwrap());
+    let serve_static = Router::new()
+        .nest_service("/assets", ServeDir::new("public"))
+        .layer(SetResponseHeaderLayer::if_not_present(
+            CACHE_CONTROL,
+            HeaderValue::from_static("public, max-age=31536000"),
+        ));
+
     let db = SqlitePool::connect(env::var("DATABASE_URL").unwrap().as_str())
         .await
         .unwrap();
-    let state = Arc::new(AppState { db });
+    let state = Arc::new(AppState { db, tera });
 
     // Initialize the application state and routes
     let app = Router::new()
+        .merge(serve_static)
+        .merge(frontend::routes())
         .merge(content_routes::routes())
         .merge(page_routes::routes())
         .merge(app_routes::routes())

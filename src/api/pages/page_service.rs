@@ -1,4 +1,4 @@
-use crate::pages::{
+use crate::api::pages::{
     NewPageRequest, Page, PageContent, PageWithContent, page_repository::PageRepository,
 };
 

@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
-use crate::pages::Page;
+use crate::api::pages::Page;
 
 pub mod app_repository;
 pub mod app_routes;

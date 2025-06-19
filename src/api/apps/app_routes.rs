@@ -1,6 +1,6 @@
 use crate::{
     AppState,
-    apps::{app_repository::AppRepository, app_service::AppService},
+    api::apps::{app_repository::AppRepository, app_service::AppService},
 };
 use axum::{
     Json, Router,

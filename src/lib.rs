@@ -1,9 +1,12 @@
-use sqlx::SqlitePool;
+use std::sync::Arc;
 
-pub mod apps;
-pub mod content;
-pub mod pages;
+use sqlx::SqlitePool;
+use tera::Tera;
+
+pub mod api;
+pub mod routes;
 
 pub struct AppState {
     pub db: SqlitePool,
+    pub tera: Arc<Tera>,
 }

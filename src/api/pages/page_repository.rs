@@ -2,8 +2,8 @@ use sqlx::Error::RowNotFound;
 use sqlx::SqlitePool;
 
 use crate::{
-    content::Content,
-    pages::{NewPageRequest, Page, PageContent, PageWithContent},
+    api::content::Content,
+    api::pages::{NewPageRequest, Page, PageContent, PageWithContent},
 };
 
 pub struct PageRepository {

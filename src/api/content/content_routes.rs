@@ -1,7 +1,7 @@
-use crate::content::{Content, NewContentRequest};
+use crate::api::content::{Content, NewContentRequest};
 use crate::{
     AppState,
-    content::{content_repository::ContentRepository, content_service::ContentService},
+    api::content::{content_repository::ContentRepository, content_service::ContentService},
 };
 use axum::routing::put;
 use axum::{

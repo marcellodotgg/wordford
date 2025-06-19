@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
-use crate::content::Content;
+use crate::api::content::Content;
 
 pub mod page_repository;
 pub mod page_routes;

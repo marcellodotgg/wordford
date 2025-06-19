@@ -1,4 +1,4 @@
-use crate::content::{Content, NewContentRequest, content_repository::ContentRepository};
+use crate::api::content::{Content, NewContentRequest, content_repository::ContentRepository};
 
 pub struct ContentService {
     content_repository: ContentRepository,

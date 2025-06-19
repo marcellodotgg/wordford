@@ -1,8 +1,8 @@
 use sqlx::SqlitePool;
 
 use crate::{
-    apps::{App, AppWithPages},
-    pages::Page,
+    api::apps::{App, AppWithPages},
+    api::pages::Page,
 };
 
 pub struct AppRepository {
@@ -44,7 +44,7 @@ impl AppRepository {
             },
             pages: pages
                 .into_iter()
-                .map(|p| crate::pages::Page {
+                .map(|p| Page {
                     id: p.id.expect("id should not be null"),
                     app_id: p.app_id,
                     name: p.name,

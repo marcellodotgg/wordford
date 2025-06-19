@@ -1,6 +1,6 @@
 use crate::{
-    apps::{AppWithPages, app_repository::AppRepository},
-    pages::Page,
+    api::apps::{AppWithPages, app_repository::AppRepository},
+    api::pages::Page,
 };
 
 pub struct AppService {
