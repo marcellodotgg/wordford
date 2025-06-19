@@ -10,7 +10,6 @@ pub mod app_service;
 #[derive(Deserialize, Serialize, Debug, ToSchema)]
 pub struct App {
     pub id: i64,
-    pub org_id: i64,
     pub name: String,
     pub description: String,
     pub url: String,

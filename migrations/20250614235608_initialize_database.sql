@@ -1,29 +1,12 @@
--- set up orgs
-CREATE TABLE orgs (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    slug TEXT NOT NULL UNIQUE,
-    name TEXT NOT NULL,
-    description TEXT,
-    logo TEXT,
-    url TEXT,
-    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
-
--- create an index for slug to optimize lookups
-CREATE UNIQUE INDEX IF NOT EXISTS idx_orgs_slug ON orgs(slug);
-
 -- set up apps
 CREATE TABLE apps (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    org_id INTEGER NOT NULL,
     name TEXT NOT NULL,
     description TEXT,
     url TEXT,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (org_id) REFERENCES orgs(id) ON DELETE CASCADE,
-    UNIQUE (org_id, name)
+    UNIQUE (name)
 );
 
 -- set up pages
@@ -52,12 +35,9 @@ CREATE TABLE content (
     UNIQUE (page_id, name)
 );
 
--- create a dummy org for initial setup
-INSERT INTO orgs (slug, name, description, logo, url)
-VALUES ('example-org', 'Example Organization', 'An example organization for demonstration purposes.', 'https://example.com/logo.png', 'https://example.com');
 -- create a dummy app for the example org
-INSERT INTO apps (org_id, name, description, url)
-VALUES ((SELECT id FROM orgs WHERE slug = 'example-org'), 'Example App', 'An example app for demonstration purposes.', 'https://example.com/app');
+INSERT INTO apps (name, description, url)
+VALUES ('Example App', 'An example app for demonstration purposes.', 'https://example.com/app');
 -- create a dummy page for the example app
 INSERT INTO pages (app_id, name)
 VALUES ((SELECT id FROM apps WHERE name = 'Example App'), 'home');

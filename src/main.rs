@@ -3,9 +3,7 @@ use sqlx::SqlitePool;
 use std::{env, sync::Arc};
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
-use wordford::{
-    AppState, apps::app_routes, content::content_routes, orgs::org_routes, pages::page_routes,
-};
+use wordford::{AppState, apps::app_routes, content::content_routes, pages::page_routes};
 
 #[derive(OpenApi)]
 #[openapi(
@@ -17,9 +15,6 @@ use wordford::{
         page_routes::get_content_for_page,
         page_routes::create_page,
         page_routes::delete_page,
-        org_routes::find_by_id,
-        org_routes::create_org,
-        org_routes::delete_org,
         app_routes::find_by_id,
         app_routes::find_pages_by_app_id,
         app_routes::create_app,
@@ -45,7 +40,6 @@ async fn main() {
         .merge(content_routes::routes())
         .merge(page_routes::routes())
         .merge(app_routes::routes())
-        .merge(org_routes::routes())
         .merge(SwaggerUi::new("/swagger-ui").url("/api-docs/openapi.json", ApiDoc::openapi()))
         .with_state(state);
 

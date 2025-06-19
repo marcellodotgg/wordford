@@ -36,7 +36,6 @@ impl AppRepository {
         Ok(AppWithPages {
             app: App {
                 id: app.id,
-                org_id: app.org_id,
                 name: app.name,
                 description: app.description.unwrap_or("".to_string()),
                 url: app.url.unwrap_or("".to_string()),
