@@ -20,6 +20,15 @@ impl PageService {
         self.page_repository.get_content_for_page(page_id).await
     }
 
+    pub async fn get_content_for_page_name(
+        &self,
+        page_name: &str,
+    ) -> Result<PageContent, sqlx::Error> {
+        self.page_repository
+            .get_content_for_page_name(page_name)
+            .await
+    }
+
     pub async fn create_page(&self, request: NewPageRequest) -> Result<Page, sqlx::Error> {
         self.page_repository.create_page(request).await
     }

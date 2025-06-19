@@ -76,6 +76,27 @@ impl PageRepository {
         Ok(rows)
     }
 
+    pub async fn get_content_for_page_name(
+        &self,
+        page_name: &str,
+    ) -> Result<PageContent, sqlx::Error> {
+        let page = sqlx::query!(
+            r#"
+            SELECT id FROM pages WHERE name = ?
+            "#,
+            page_name
+        )
+        .fetch_one(&self.db)
+        .await?;
+
+        if page.id.is_none() {
+            return Err(RowNotFound);
+        }
+
+        self.get_content_for_page(&page.id.expect("id should be present"))
+            .await
+    }
+
     pub async fn create_page(&self, page: NewPageRequest) -> Result<Page, sqlx::Error> {
         let record = sqlx::query!(
             r#"

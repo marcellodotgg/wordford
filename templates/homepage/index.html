@@ -5,6 +5,12 @@
     {% include "shared/head.html" %}
   </head>
   <body>
-    Hello World!
+    <nav>
+      <div class="container">
+        <h1>Wordford</h1>
+      </div>
+    </nav>
+    <main class="container">{{ homepage_content|safe }}</main>
+    <footer><div class="container">{{footer_content|safe }}</div></footer>
   </body>
 </html>
