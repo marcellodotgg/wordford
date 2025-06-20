@@ -37,10 +37,10 @@ CREATE TABLE content (
 
 -- create a dummy app for the example org
 INSERT INTO apps (name, description, url)
-VALUES ('Example App', 'An example app for demonstration purposes.', 'https://example.com/app');
+VALUES ('Wordford', 'The primary CMS for the Wordford application.', 'https://wordford.com');
 -- create a dummy page for the example app
 INSERT INTO pages (app_id, name)
-VALUES ((SELECT id FROM apps WHERE name = 'Example App'), 'wordford');
+VALUES ((SELECT id FROM apps WHERE name = 'Wordford'), 'wordford');
 -- create a dummy content for the example page
 INSERT INTO content (page_id, name, body)
 VALUES ((SELECT id FROM pages WHERE name = 'wordford'), 'homepage_content', "<h2>Welcome to Wordford!</h2>

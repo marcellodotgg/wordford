@@ -18,3 +18,8 @@ pub struct AppWithPages {
     pub app: App,
     pub pages: Vec<Page>,
 }
+
+#[derive(Deserialize, Serialize, Debug, ToSchema)]
+pub struct AppSearch {
+    pub name: String,
+}

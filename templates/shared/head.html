@@ -39,18 +39,7 @@
 
 <!-- Scripts -->
 <script src="/assets/htmx@2.0.4.min.js"></script>
-<!-- Search by clicking "/" -->
-<script>
-  document.addEventListener("keydown", function (e) {
-    if (e.key === "/") {
-      const searchBar = document.getElementById("search_bar");
-      if (searchBar && document.activeElement !== searchBar) {
-        e.preventDefault();
-        searchBar.focus();
-        searchBar.select();
-      }
-    }
-  });
-</script>
+<script src="/assets/slash_to_search.js"></script>
+<script src="/assets/clear_search_on_blur.js"></script>
 <!-- Styles -->
 <link rel="stylesheet" href="/assets/main.css" />

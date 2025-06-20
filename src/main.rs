@@ -28,6 +28,7 @@ use wordford::{
         routes::apps::find_pages_by_app_id,
         routes::apps::create_app,
         routes::apps::delete_app,
+        routes::apps::search
     ),
     tags(
         (name = "Content Management", description = "Content management endpoints"),

@@ -1,18 +1,25 @@
 use axum::{
     Json, Router,
-    extract::{Path, State},
+    extract::{Path, Query, State},
     http::StatusCode,
-    response::IntoResponse,
+    response::{Html, IntoResponse},
     routing::get,
 };
 use std::sync::Arc;
+use tera::Context;
 
-use crate::{AppState, repositories::apps::AppRepository, services::apps::AppService};
+use crate::{
+    AppState,
+    models::app::{App, AppSearch},
+    repositories::apps::AppRepository,
+    services::apps::AppService,
+};
 
 fn api_routes() -> Router<Arc<AppState>> {
     Router::new()
         .route("/{id}", get(find_by_id))
         .route("/{id}/pages", get(find_pages_by_app_id))
+        .route("/search", get(search))
 }
 
 pub fn routes() -> Router<Arc<AppState>> {
@@ -43,6 +50,42 @@ pub async fn find_by_id(
         Err(sqlx::Error::RowNotFound) => StatusCode::NOT_FOUND.into_response(),
         Err(_) => StatusCode::INTERNAL_SERVER_ERROR.into_response(),
     }
+}
+
+#[utoipa::path(
+    get,
+    path = "/api/apps/search",
+    params(
+        ("name" = String, Query, description = "Name to search for"),
+    ),
+    responses(
+        (status = 200, description = "Get app by search criteria", content_type = "text/html", body = String),
+        (status = 404, description = "Not found")
+    ),
+    tag = "Apps"
+)]
+pub async fn search(
+    State(state): State<Arc<AppState>>,
+    Query(params): Query<AppSearch>,
+) -> Html<String> {
+    let app_repository = AppRepository::new(state.db.clone());
+    let app_service = AppService::new(app_repository);
+    let mut context = Context::new();
+
+    if params.name.trim().is_empty() {
+        context.insert("apps", &Vec::<App>::new());
+        return Html("".to_string());
+    }
+
+    let discovered_apps = app_service.search(&params).await.unwrap_or_default();
+    context.insert("apps", &discovered_apps);
+
+    Html(
+        state
+            .tera
+            .render("apps/_search_autofill.html", &context)
+            .unwrap(),
+    )
 }
 
 #[utoipa::path(

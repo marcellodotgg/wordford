@@ -9,21 +9,30 @@
       <div class="container">
         <h1>Wordford</h1>
         <ul>
-          <li>
-            <input
-              id="search_bar"
-              type="text"
-              placeholder="Search applications..."
-            />
+          <li id="search_wrapper" class="search-wrapper">
+            <div class="search-bar-container">
+              <input
+                id="search_bar"
+                type="text"
+                name="name"
+                placeholder="Search apps..."
+                hx-get="/api/apps/search"
+                hx-trigger="keyup changed delay:200ms"
+                hx-target="#search_results"
+                autocomplete="off"
+              />
+              <div class="search-results" id="search_results"></div>
+            </div>
           </li>
           <li>
-            <a href=""
-              ><img
+            <a href="">
+              <img
                 src="https://avatars.githubusercontent.com/u/104793781?v=4"
                 width="32"
                 height="32"
                 alt="profile image"
-            /></a>
+              />
+            </a>
           </li>
         </ul>
       </div>

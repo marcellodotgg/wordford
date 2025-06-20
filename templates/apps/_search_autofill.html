@@ -1,0 +1,16 @@
+<ul id="search_autofill">
+  {% if apps|length > 0 %} {% for app in apps %}
+  <li>
+    <a href="">
+      <p class="title">
+        <strong>{{ app.name }}</strong>
+      </p>
+      <p class="muted">{{ app.description }}</p>
+    </a>
+  </li>
+  {% endfor %} {% else %}
+  <li class="none-found">
+    <p class="muted">No apps were found. Try changing your search criteria.</p>
+  </li>
+  {% endif %}
+</ul>

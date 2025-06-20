@@ -55,6 +55,28 @@ impl AppRepository {
         })
     }
 
+    pub async fn search(&self, search_str: &str) -> Result<Vec<App>, sqlx::Error> {
+        let pattern = format!("%{}%", search_str);
+        let apps = sqlx::query!(
+            r#"SELECT * FROM apps WHERE LOWER(name) LIKE LOWER(?)"#,
+            pattern
+        )
+        .fetch_all(&self.db)
+        .await?;
+
+        Ok(apps
+            .into_iter()
+            .map(|app| App {
+                id: app.id,
+                name: app.name,
+                description: app.description.unwrap_or("".to_string()),
+                url: app.url.unwrap_or("".to_string()),
+                created_at: app.created_at.to_string(),
+                updated_at: app.updated_at.to_string(),
+            })
+            .collect())
+    }
+
     pub async fn find_pages_by_app_id(&self, app_id: &str) -> Result<Vec<Page>, sqlx::Error> {
         let pages = sqlx::query!(
             r#"

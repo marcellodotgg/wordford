@@ -1,5 +1,8 @@
 use crate::{
-    models::{app::AppWithPages, page::Page},
+    models::{
+        app::{App, AppSearch, AppWithPages},
+        page::Page,
+    },
     repositories::apps::AppRepository,
 };
 
@@ -14,6 +17,10 @@ impl AppService {
 
     pub async fn find_by_id(&self, app_id: &str) -> Result<AppWithPages, sqlx::Error> {
         self.app_repository.find_by_id(app_id).await
+    }
+
+    pub async fn search(&self, params: &AppSearch) -> Result<Vec<App>, sqlx::Error> {
+        self.app_repository.search(&params.name).await
     }
 
     pub async fn find_pages_by_app_id(&self, app_id: &str) -> Result<Vec<Page>, sqlx::Error> {
