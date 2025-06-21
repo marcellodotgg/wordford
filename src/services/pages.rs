@@ -34,7 +34,7 @@ impl PageService {
         self.page_repository.create_page(request).await
     }
 
-    pub async fn delete_page(&self, page_id: &str) -> Result<(), sqlx::Error> {
+    pub async fn delete_page(&self, page_id: &i64) -> Result<(), sqlx::Error> {
         self.page_repository.delete_page(page_id).await
     }
 }

@@ -112,6 +112,7 @@ pub async fn edit_content_page(
             context.insert("is_editing", &true);
             context.insert("form_action", "Save Content");
             context.insert("content", &content.content);
+            context.insert("content_id", &content.content.id);
             context.insert("page", &content.page.page);
             context.insert("app", &content.page.app);
             context.insert("body", &content.content.body);

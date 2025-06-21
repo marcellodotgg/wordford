@@ -16,7 +16,7 @@ pub fn routes() -> Router<Arc<AppState>> {
         "/pages",
         Router::new()
             .route("/", put(create_page))
-            .route("/{id}", get(index))
+            .route("/{id}", get(index).delete(delete))
             .route("/{id}/content", get(get_content_for_page))
             .route("/{id}/content/create", get(create_content_page)),
     )
@@ -120,5 +120,16 @@ pub async fn create_page(
             error_message("The provided App ID is not valid.").into_response()
         }
         Err(_) => error_message("Something went wrong creating the page.").into_response(),
+    }
+}
+
+pub async fn delete(State(state): State<Arc<AppState>>, Path(id): Path<i64>) -> impl IntoResponse {
+    let page_repository = PageRepository::new(&state.db);
+    let page_service = PageService::new(page_repository);
+
+    match page_service.delete_page(&id).await {
+        Ok(_) => Html("").into_response(),
+        Err(sqlx::Error::RowNotFound) => StatusCode::NOT_FOUND.into_response(),
+        Err(_) => StatusCode::INTERNAL_SERVER_ERROR.into_response(),
     }
 }

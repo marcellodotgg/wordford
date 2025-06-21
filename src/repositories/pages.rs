@@ -140,7 +140,7 @@ impl PageRepository {
         })
     }
 
-    pub async fn delete_page(&self, id: &str) -> Result<(), sqlx::Error> {
+    pub async fn delete_page(&self, id: &i64) -> Result<(), sqlx::Error> {
         sqlx::query!(
             r#"
             DELETE FROM pages WHERE id = ?
