@@ -12,7 +12,7 @@ pub struct Page {
 }
 
 #[derive(Deserialize, Serialize, Debug)]
-pub struct PageWithContent {
+pub struct FullPage {
     pub app: App,
     pub page: Page,
     pub content: Vec<Content>,

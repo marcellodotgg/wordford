@@ -26,16 +26,12 @@ pub async fn create_content_page(
     State(state): State<Arc<AppState>>,
     Path(id): Path<i64>,
 ) -> Html<String> {
-    let page_repository = PageRepository::new(state.db.clone());
+    let page_repository = PageRepository::new(&state.db);
     let page_service = PageService::new(page_repository);
+    let context = tera::Context::new();
 
-    let page = match page_service.find_by_id(&id).await {
-        Ok(page) => page,
-        Err(_) => None,
-    };
-
-    match page {
-        Some(page) => {
+    match page_service.find_by_id(&id).await {
+        Ok(page) => {
             let context = tera::Context::from_serialize(page).unwrap();
             Html(
                 state
@@ -44,25 +40,23 @@ pub async fn create_content_page(
                     .unwrap(),
             )
         }
-        None => Html(
-            state
-                .tera
-                .render("shared/404.html", &tera::Context::new())
-                .unwrap(),
-        ),
+        Err(sqlx::Error::RowNotFound) => {
+            Html(state.tera.render("shared/404.html", &context).unwrap())
+        }
+        Err(_) => Html(state.tera.render("shared/500.html", &context).unwrap()),
     }
 }
 
 pub async fn index(State(state): State<Arc<AppState>>, Path(id): Path<i64>) -> Html<String> {
-    let page_repository = PageRepository::new(state.db.clone());
+    let page_repository = PageRepository::new(&state.db);
     let page_service = PageService::new(page_repository);
 
     match page_service.find_by_id(&id).await {
-        Ok(Some(page)) => {
+        Ok(page) => {
             let context = tera::Context::from_serialize(page).unwrap();
             Html(state.tera.render("pages/index.html", &context).unwrap())
         }
-        Ok(None) => Html(
+        Err(sqlx::Error::RowNotFound) => Html(
             state
                 .tera
                 .render("shared/404.html", &tera::Context::new())
@@ -81,7 +75,7 @@ pub async fn get_content_for_page(
     State(state): State<Arc<AppState>>,
     Path(id): Path<i64>,
 ) -> impl IntoResponse {
-    let page_repository = PageRepository::new(state.db.clone());
+    let page_repository = PageRepository::new(&state.db);
     let page_service = PageService::new(page_repository);
 
     match page_service.get_content_for_page(&id).await {
@@ -95,7 +89,7 @@ pub async fn create_page(
     State(state): State<Arc<AppState>>,
     Form(request): Form<NewPageRequest>,
 ) -> impl IntoResponse {
-    let page_repository = PageRepository::new(state.db.clone());
+    let page_repository = PageRepository::new(&state.db);
     let page_service = PageService::new(page_repository);
 
     let mut context = tera::Context::new();

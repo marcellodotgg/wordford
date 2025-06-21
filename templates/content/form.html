@@ -1,5 +1,16 @@
 <form
+  {%
+  if
+  is_editing
+  %}
+  hx-patch="/content/{{ content.id }}"
+  {%
+  else
+  %}
   hx-put="/content"
+  {%
+  endif
+  %}
   hx-trigger="submit"
   hx-target="this"
   hx-swap="outerHTML"
@@ -40,15 +51,20 @@
       required
       maxlength="5000"
     >
-{% if body %}{{ body }}{% endif %}</textarea
+{% if body %}{{ body }}{% endif %}
+</textarea
     >
   </div>
   {% if page %}
   <input type="hidden" name="page_id" value="{{ page.id }}" />
-  {% else %}
+  {% endif %} {% if page_id %}
   <input type="hidden" name="page_id" value="{{ page_id }}" />
+  {% endif %} {% if content %}
+  <input type="hidden" name="content_id" value="{{ content.id }}" />
   {% endif %}
   <div>
-    <button type="submit" class="button">Create Content</button>
+    <button type="submit" class="button">
+      {% if is_editing %} Save Changes {% else %} Create Content {% endif %}
+    </button>
   </div>
 </form>

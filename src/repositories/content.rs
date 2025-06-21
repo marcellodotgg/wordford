@@ -1,17 +1,17 @@
 use sqlx::SqlitePool;
 
-use crate::models::content::{Content, NewContentRequest};
+use crate::models::content::{Content, NewContentRequest, UpdateContentRequest};
 
 pub struct ContentRepository {
     db: SqlitePool,
 }
 
 impl ContentRepository {
-    pub fn new(db: SqlitePool) -> Self {
-        ContentRepository { db }
+    pub fn new(db: &SqlitePool) -> Self {
+        ContentRepository { db: db.clone() }
     }
 
-    pub async fn find_by_id(&self, id: &str) -> Result<Content, sqlx::Error> {
+    pub async fn find_by_id(&self, id: &i64) -> Result<Content, sqlx::Error> {
         let content = sqlx::query!(
             r#"
             SELECT * FROM content WHERE id = ?
@@ -52,6 +52,32 @@ impl ContentRepository {
                 updated_at: c.updated_at.to_string(),
             })
             .collect())
+    }
+
+    pub async fn update_content(
+        &self,
+        request: UpdateContentRequest,
+    ) -> Result<Content, sqlx::Error> {
+        let result = sqlx::query!(
+            r#"
+            UPDATE content SET name = ?, body = ? WHERE id = ?
+            RETURNING id, page_id, name, body, created_at, updated_at
+            "#,
+            request.name,
+            request.body,
+            request.content_id
+        )
+        .fetch_one(&self.db)
+        .await?;
+
+        Ok(Content {
+            id: result.id,
+            page_id: result.page_id,
+            name: result.name,
+            body: result.body,
+            created_at: result.created_at.to_string(),
+            updated_at: result.updated_at.to_string(),
+        })
     }
 
     pub async fn create_content(

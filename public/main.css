@@ -440,6 +440,10 @@ ul.breadcrumbs a {
   border: 1px solid #252525;
 }
 
+.content-list-view img {
+  max-width: 100%;
+}
+
 .button.error {
   border-color: #cc4e4e;
   color: #cc4e4e;

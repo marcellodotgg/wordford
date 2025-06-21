@@ -10,8 +10,8 @@ pub struct AppRepository {
 }
 
 impl AppRepository {
-    pub fn new(db: SqlitePool) -> Self {
-        AppRepository { db }
+    pub fn new(db: &SqlitePool) -> Self {
+        AppRepository { db: db.clone() }
     }
 
     pub async fn find_by_id(&self, id: &i64) -> Result<AppWithPages, sqlx::Error> {

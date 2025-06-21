@@ -1,5 +1,5 @@
 use crate::{
-    models::page::{NewPageRequest, Page, PageContent, PageWithContent},
+    models::page::{FullPage, NewPageRequest, Page, PageContent},
     repositories::pages::PageRepository,
 };
 
@@ -12,7 +12,7 @@ impl PageService {
         PageService { page_repository }
     }
 
-    pub async fn find_by_id(&self, page_id: &i64) -> Result<Option<PageWithContent>, sqlx::Error> {
+    pub async fn find_by_id(&self, page_id: &i64) -> Result<FullPage, sqlx::Error> {
         self.page_repository.find_by_id(page_id).await
     }
 

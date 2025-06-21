@@ -26,7 +26,7 @@ pub fn routes() -> Router<Arc<AppState>> {
 }
 
 pub async fn index(State(state): State<Arc<AppState>>, Path(id): Path<i64>) -> Html<String> {
-    let app_repository = AppRepository::new(state.db.clone());
+    let app_repository = AppRepository::new(&state.db);
     let app_service = AppService::new(app_repository);
 
     match app_service.find_by_id(&id).await {
@@ -42,7 +42,7 @@ pub async fn create_new_page(
     State(state): State<Arc<AppState>>,
     Path(id): Path<i64>,
 ) -> Html<String> {
-    let app_repository = AppRepository::new(state.db.clone());
+    let app_repository = AppRepository::new(&state.db);
     let app_service = AppService::new(app_repository);
 
     match app_service.find_by_id(&id).await {
@@ -58,7 +58,7 @@ pub async fn search_results(
     State(state): State<Arc<AppState>>,
     Query(params): Query<AppSearch>,
 ) -> Html<String> {
-    let app_repository = AppRepository::new(state.db.clone());
+    let app_repository = AppRepository::new(&state.db);
     let app_service = AppService::new(app_repository);
     let mut context = Context::new();
 
@@ -83,7 +83,7 @@ pub async fn delete_app(
     State(state): State<Arc<AppState>>,
     Path(id): Path<String>,
 ) -> impl IntoResponse {
-    let app_repository = AppRepository::new(state.db.clone());
+    let app_repository = AppRepository::new(&state.db);
     let app_service = AppService::new(app_repository);
 
     match app_service.delete_app(&id).await {

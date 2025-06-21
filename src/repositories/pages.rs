@@ -5,7 +5,7 @@ use sqlx::SqlitePool;
 use crate::models::{
     app::App,
     content::Content,
-    page::{NewPageRequest, Page, PageContent, PageWithContent},
+    page::{FullPage, NewPageRequest, Page, PageContent},
 };
 
 pub struct PageRepository {
@@ -13,11 +13,11 @@ pub struct PageRepository {
 }
 
 impl PageRepository {
-    pub fn new(db: SqlitePool) -> Self {
-        PageRepository { db }
+    pub fn new(db: &SqlitePool) -> Self {
+        PageRepository { db: db.clone() }
     }
 
-    pub async fn find_by_id(&self, id: &i64) -> Result<Option<PageWithContent>, sqlx::Error> {
+    pub async fn find_by_id(&self, id: &i64) -> Result<FullPage, sqlx::Error> {
         let page = sqlx::query!(
             r#"
             SELECT * FROM pages WHERE id = ?
@@ -45,7 +45,7 @@ impl PageRepository {
         .fetch_one(&self.db)
         .await?;
 
-        Ok(Some(PageWithContent {
+        Ok(FullPage {
             app: App {
                 id: app.id,
                 description: app.description.unwrap_or_default(),
@@ -72,7 +72,7 @@ impl PageRepository {
                     updated_at: c.updated_at.to_string(),
                 })
                 .collect(),
-        }))
+        })
     }
 
     pub async fn get_content_for_page(&self, page_id: &i64) -> Result<PageContent, sqlx::Error> {
