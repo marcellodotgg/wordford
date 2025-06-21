@@ -1,0 +1,48 @@
+<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+  <!-- Soft ocean background -->
+  <rect width="32" height="32" fill="#E6F9FC"/>
+
+  <!-- Stingray body (diamond with wings and a taper) -->
+  <path fill="#8CCAD9" d="
+    M16 6
+    C10 8, 4 14, 8 18
+    C10 20, 13 21, 14 23
+    C14 25, 18 25, 18 23
+    C19 21, 22 20, 24 18
+    C28 14, 22 8, 16 6
+    Z
+  "/>
+
+  <!-- Shading on wing tips -->
+  <path fill="#AEE1EC" d="
+    M10 10
+    C6 14, 8 17, 11 18
+    C8 15, 8 12, 10 10
+    Z
+    M22 10
+    C26 14, 24 17, 21 18
+    C24 15, 24 12, 22 10
+    Z
+  "/>
+
+  <!-- Tail -->
+  <path fill="#8CCAD9" d="
+    M16 23
+    C15.5 26, 16.5 27, 17 28
+    C17.5 29, 15.5 29, 15 28
+    C14.5 27, 15 25, 15.5 23
+    Z
+  "/>
+
+  <!-- Eyes -->
+  <circle cx="13" cy="13" r="2" fill="#FFFFFF"/>
+  <circle cx="19" cy="13" r="2" fill="#FFFFFF"/>
+  <circle cx="13" cy="13" r="1" fill="#3A3A3A"/>
+  <circle cx="19" cy="13" r="1" fill="#3A3A3A"/>
+  <circle cx="12.5" cy="12.5" r="0.5" fill="#DFF7FF"/>
+  <circle cx="18.5" cy="12.5" r="0.5" fill="#DFF7FF"/>
+
+  <!-- Blush -->
+  <circle cx="11" cy="15.5" r="0.8" fill="#FFB3B3"/>
+  <circle cx="21" cy="15.5" r="0.8" fill="#FFB3B3"/>
+</svg>

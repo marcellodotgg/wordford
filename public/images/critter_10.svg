@@ -1,0 +1,27 @@
+<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+  <!-- Background -->
+  <rect width="32" height="32" fill="#FDF6E3"/>
+
+  <!-- Lantern base frame -->
+  <rect x="9" y="9" width="14" height="16" rx="3" ry="3" fill="#F7D07B" stroke="#C19A38" stroke-width="1.5"/>
+
+  <!-- Lantern glass -->
+  <rect x="11" y="11" width="10" height="12" rx="2" ry="2" fill="#FFF1B5" opacity="0.85"/>
+
+  <!-- Vertical frame bars -->
+  <line x1="14" y1="11" x2="14" y2="23" stroke="#C19A38" stroke-width="1.2"/>
+  <line x1="18" y1="11" x2="18" y2="23" stroke="#C19A38" stroke-width="1.2"/>
+
+  <!-- Horizontal frame bars -->
+  <line x1="11" y1="15" x2="21" y2="15" stroke="#C19A38" stroke-width="1.2"/>
+  <line x1="11" y1="19" x2="21" y2="19" stroke="#C19A38" stroke-width="1.2"/>
+
+  <!-- Lantern top (curved) -->
+  <path d="M9 9 Q16 4 23 9" fill="#C19A38" stroke="#A67C00" stroke-width="1.5"/>
+
+  <!-- Handle -->
+  <rect x="14" y="3" width="4" height="6" rx="2" ry="3" fill="#C19A38"/>
+
+  <!-- Glow -->
+  <circle cx="16" cy="16" r="10" fill="#FFEB8A" opacity="0.3"/>
+</svg>

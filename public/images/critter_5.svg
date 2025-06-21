@@ -1,0 +1,39 @@
+<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+  <!-- Background -->
+  <rect width="32" height="32" fill="#D7ECF8"/>
+
+  <!-- Body -->
+  <path fill="#7BAEDC" d="
+    M5 18
+    C3 17, 3 15, 5 14
+    C9 12, 21 12, 25 15
+    C27 16, 27 19, 25 20
+    C21 22, 9 22, 5 20
+    Z
+  "/>
+
+  <!-- Belly -->
+  <path fill="#A4CAE9" d="
+    M7 17
+    C8 16, 22 16, 24 18
+    C24 19, 22 20, 11 20
+    C10 19, 7 18, 7 17
+    Z
+  "/>
+
+  <!-- Tail (fluke) -->
+  <path fill="#7BAEDC" d="
+    M25 15
+    L29 11
+    L29 19
+    Z
+  "/>
+
+  <!-- Eye -->
+  <circle cx="10" cy="15" r="3" fill="#FFFFFF"/>
+  <circle cx="10" cy="15" r="1.5" fill="#2D3B4F"/>
+  <circle cx="9.5" cy="14.5" r="0.6" fill="#C7D9F7"/>
+
+  <!-- Blush -->
+  <circle cx="8" cy="18" r="1" fill="#FF9AA2" opacity="0.7"/>
+</svg>
