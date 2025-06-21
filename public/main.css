@@ -237,6 +237,13 @@ h2 {
   max-width: 776px;
 }
 
+@media (max-width: 600px) {
+  .container {
+    width: 100%;
+    padding: 0 16px;
+  }
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
@@ -372,4 +379,21 @@ ul.breadcrumbs {
   margin: 0 4px;
   padding-left: 2px;
   color: #999;
+}
+
+.mobile-only {
+  display: none;
+}
+
+.desktop-only {
+  display: block;
+}
+
+@media (max-width: 600px) {
+  .mobile-only {
+    display: block;
+  }
+  .desktop-only {
+    display: none;
+  }
 }
