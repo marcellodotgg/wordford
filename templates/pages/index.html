@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Wordford | {{ page.name }}</title>
+    {% include "shared/head.html" %}
+  </head>
+  <body>
+    {% include "shared/navbar.html" %}
+    <main
+      class="container"
+      style="display: flex; flex-direction: column; gap: 8px"
+    >
+      <ul class="breadcrumbs">
+        <li><a href="/apps/{{app.id}}">{{ app.name }}</a></li>
+        <li><strong>{{ page.name }}</strong></li>
+      </ul>
+      <h1
+        style="
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        "
+      >
+        Manage Content
+        <div>
+          <a href="/pages/{{page.id}}/content/create" class="button">
+            Add Content
+          </a>
+        </div>
+      </h1>
+      <section
+        hx-get="/content?page_id={{ page.id }}"
+        hx-trigger="load"
+        hx-target="this"
+        hx-swap="innerHTML"
+      ></section>
+    </main>
+    {% include "shared/footer.html" %}
+  </body>
+</html>

@@ -1,4 +1,4 @@
-use crate::models::content::Content;
+use crate::models::{app::App, content::Content};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
@@ -13,6 +13,7 @@ pub struct Page {
 
 #[derive(Deserialize, Serialize, Debug)]
 pub struct PageWithContent {
+    pub app: App,
     pub page: Page,
     pub content: Vec<Content>,
 }

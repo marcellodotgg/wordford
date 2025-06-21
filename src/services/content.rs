@@ -16,6 +16,10 @@ impl ContentService {
         self.content_repository.find_by_id(id).await
     }
 
+    pub async fn find_all_by_page_id(&self, page_id: i64) -> Result<Vec<Content>, sqlx::Error> {
+        self.content_repository.find_all_by_page_id(page_id).await
+    }
+
     pub async fn create_content(
         &self,
         mut request: NewContentRequest,

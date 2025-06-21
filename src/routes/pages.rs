@@ -17,8 +17,40 @@ pub fn routes() -> Router<Arc<AppState>> {
         Router::new()
             .route("/", put(create_page))
             .route("/{id}", get(index))
-            .route("/{id}/content", get(get_content_for_page)),
+            .route("/{id}/content", get(get_content_for_page))
+            .route("/{id}/content/create", get(create_content_page)),
     )
+}
+
+pub async fn create_content_page(
+    State(state): State<Arc<AppState>>,
+    Path(id): Path<i64>,
+) -> Html<String> {
+    let page_repository = PageRepository::new(state.db.clone());
+    let page_service = PageService::new(page_repository);
+
+    let page = match page_service.find_by_id(&id).await {
+        Ok(page) => page,
+        Err(_) => None,
+    };
+
+    match page {
+        Some(page) => {
+            let context = tera::Context::from_serialize(page).unwrap();
+            Html(
+                state
+                    .tera
+                    .render("pages/create_content.html", &context)
+                    .unwrap(),
+            )
+        }
+        None => Html(
+            state
+                .tera
+                .render("shared/404.html", &tera::Context::new())
+                .unwrap(),
+        ),
+    }
 }
 
 pub async fn index(State(state): State<Arc<AppState>>, Path(id): Path<i64>) -> Html<String> {

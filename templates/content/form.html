@@ -1,0 +1,54 @@
+<form
+  hx-put="/content"
+  hx-trigger="submit"
+  hx-target="this"
+  hx-swap="outerHTML"
+  style="display: flex; flex-direction: column; gap: 16px"
+>
+  {% if error %}
+  <div class="banner error">{{ error }}</div>
+  {% endif %} {% if success %}
+  <div class="banner success">{{ success }}</div>
+  {% endif %}
+  <div class="form-group">
+    <label for="name">Name</label>
+    <input
+      type="text"
+      id="name"
+      name="name"
+      placeholder="Enter a unique name for this content"
+      required
+      minlength="3"
+      maxlength="30"
+      {%
+      if
+      name
+      %}
+      value="{{ name }}"
+      {%
+      endif
+      %}
+      autocomplete="off"
+    />
+  </div>
+  <div class="form-group">
+    <label for="description">Body</label>
+    <textarea
+      id="body"
+      name="body"
+      placeholder="Enter a body for this content"
+      required
+      maxlength="5000"
+    >
+{% if body %}{{ body }}{% endif %}</textarea
+    >
+  </div>
+  {% if page %}
+  <input type="hidden" name="page_id" value="{{ page.id }}" />
+  {% else %}
+  <input type="hidden" name="page_id" value="{{ page_id }}" />
+  {% endif %}
+  <div>
+    <button type="submit" class="button">Create Content</button>
+  </div>
+</form>

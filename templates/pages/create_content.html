@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Wordford | Create Content</title>
+    {% include "shared/head.html" %}
+  </head>
+  <body>
+    {% include "shared/navbar.html" %}
+    <main
+      class="container"
+      style="display: flex; flex-direction: column; gap: 8px"
+    >
+      <ul class="breadcrumbs">
+        <li><a href="/apps/{{ app.id }}">{{ app.name }}</a></li>
+        <li><a href="/pages/{{ page.id }}">{{ page.name }}</a></li>
+        <li><strong>Create Content</strong></li>
+      </ul>
+      <section>{% include "content/form.html" %}</section>
+    </main>
+    {% include "shared/footer.html" %}
+  </body>
+</html>

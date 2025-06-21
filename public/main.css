@@ -278,6 +278,7 @@ a.button {
   border: 1px solid #252525;
   font-weight: 600;
   line-height: 1.4;
+  font-family: Georgia, "Times New Roman", Times, serif, sans-serif;
 }
 
 button.button:hover,
@@ -329,20 +330,32 @@ form input[type="text"],
 form input[type="email"] {
   padding: 6px 8px;
   border: 1px solid #aaa;
-  background: #f8f8f8;
   width: 100%;
   transition-duration: 300ms;
+}
+
+form textarea {
+  padding: 6px;
+  border: 1px solid #aaa;
+  resize: vertical;
+  max-height: 400px;
+  min-height: 200px;
+  font-size: 1rem;
 }
 
 form input {
   font-size: 1rem;
 }
 
+form textarea::placeholder,
 form input[type="text"]::placeholder,
 form input[type="email"]::placeholder {
-  color: #444;
+  color: #666;
+  font-size: inherit;
+  font-family: Georgia, "Times New Roman", Times, serif;
 }
 
+form textarea:focus,
 form input:focus {
   outline: none;
   border: 1px solid #252525;
@@ -350,8 +363,18 @@ form input:focus {
 
 .banner {
   border: 1px solid;
-  background: #fff1f1;
   padding: 4px 8px;
+}
+
+.banner.success {
+  border-color: #4caf50;
+  background: #f0fff4;
+}
+
+.banner.success::before {
+  content: "Success: ";
+  font-weight: bold;
+  color: #338a36;
 }
 
 .banner.error {
@@ -381,6 +404,10 @@ ul.breadcrumbs {
   color: #999;
 }
 
+ul.breadcrumbs a {
+  color: #252525;
+}
+
 .mobile-only {
   display: none;
 }
@@ -396,4 +423,28 @@ ul.breadcrumbs {
   .desktop-only {
     display: none;
   }
+}
+
+.content-list-view {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.content-list-view > li {
+  padding: 8px;
+  border: 1px solid #252525;
+}
+
+.button.error {
+  border-color: #cc4e4e;
+  color: #cc4e4e;
+}
+
+.button.error:hover {
+  background: #cc4e4e;
+  color: white;
 }

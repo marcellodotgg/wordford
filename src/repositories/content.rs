@@ -31,6 +31,29 @@ impl ContentRepository {
         })
     }
 
+    pub async fn find_all_by_page_id(&self, page_id: i64) -> Result<Vec<Content>, sqlx::Error> {
+        let contents = sqlx::query!(
+            r#"
+            SELECT * FROM content WHERE page_id = ?
+            "#,
+            page_id
+        )
+        .fetch_all(&self.db)
+        .await?;
+
+        Ok(contents
+            .into_iter()
+            .map(|c| Content {
+                id: c.id.expect("id should not be null"),
+                page_id: c.page_id,
+                name: c.name,
+                body: c.body,
+                created_at: c.created_at.to_string(),
+                updated_at: c.updated_at.to_string(),
+            })
+            .collect())
+    }
+
     pub async fn create_content(
         &self,
         request: &NewContentRequest,

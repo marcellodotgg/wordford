@@ -3,6 +3,7 @@ use sqlx::Error::RowNotFound;
 use sqlx::SqlitePool;
 
 use crate::models::{
+    app::App,
     content::Content,
     page::{NewPageRequest, Page, PageContent, PageWithContent},
 };
@@ -35,7 +36,24 @@ impl PageRepository {
         .fetch_all(&self.db)
         .await?;
 
+        let app = sqlx::query!(
+            r#"
+            SELECT * FROM apps WHERE id = ?
+            "#,
+            page.app_id
+        )
+        .fetch_one(&self.db)
+        .await?;
+
         Ok(Some(PageWithContent {
+            app: App {
+                id: app.id,
+                description: app.description.unwrap_or_default(),
+                url: app.url.unwrap_or_default(),
+                name: app.name,
+                created_at: app.created_at.to_string(),
+                updated_at: app.updated_at.to_string(),
+            },
             page: Page {
                 id: page.id,
                 app_id: page.app_id,
