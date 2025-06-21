@@ -146,6 +146,7 @@ pub async fn update_content(
             context.insert("content", &content);
             context.insert("body", &content.body);
             context.insert("name", &content.name);
+            context.insert("is_editing", &true);
             Html(state.tera.render("content/form.html", &context).unwrap()).into_response()
         }
         Err(sqlx::Error::Database(db_err)) if db_err.is_unique_violation() => {
