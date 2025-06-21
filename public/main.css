@@ -97,6 +97,10 @@ nav ul .search-bar-container::before {
   pointer-events: none;
 }
 
+nav ul a svg {
+  color: #252525;
+}
+
 nav ul .search-wrapper:focus-within .search-bar-container::before {
   opacity: 0;
 }
@@ -109,7 +113,6 @@ nav ul .search-wrapper:focus-within input[type="text"] {
 
 nav .search-wrapper {
   position: relative;
-  width: 100%;
 }
 
 nav .search-wrapper .search-results {
