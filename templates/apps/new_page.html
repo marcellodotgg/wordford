@@ -17,8 +17,10 @@
           <strong>Create Page</strong>
         </li>
       </ul>
-      <h1 class="my-8">Create a new Page in {{ app.name }}</h1>
-      {% include "apps/new_page_form.html" %}
+      <section>
+        <h1 class="my-8">Create a new Page in {{ app.name }}</h1>
+        {% include "apps/new_page_form.html" %}
+      </section>
     </main>
     {% include "shared/footer.html" %}
   </body>
