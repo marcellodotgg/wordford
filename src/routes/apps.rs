@@ -1,5 +1,5 @@
 use axum::{
-    Json, Router,
+    Router,
     extract::{Path, Query, State},
     http::StatusCode,
     response::{Html, IntoResponse},
@@ -15,26 +15,30 @@ use crate::{
     services::apps::AppService,
 };
 
-fn api_routes() -> Router<Arc<AppState>> {
-    Router::new()
-        .route("/{id}", get(find_by_id))
-        .route("/{id}/pages", get(find_pages_by_app_id))
-        .route("/search", get(search))
-}
-
-fn html_routes() -> Router<Arc<AppState>> {
-    Router::new()
-        .route("/{id}", get(app_html))
-        .route("/{id}/pages/new", get(new_page_html))
-}
-
 pub fn routes() -> Router<Arc<AppState>> {
-    Router::new()
-        .nest("/api/apps", api_routes())
-        .nest("/apps", html_routes())
+    Router::new().nest(
+        "/apps",
+        Router::new()
+            .route("/{id}", get(index))
+            .route("/{id}/pages/new", get(create_new_page))
+            .route("/search", get(search_results)),
+    )
 }
 
-pub async fn new_page_html(
+pub async fn index(State(state): State<Arc<AppState>>, Path(id): Path<i64>) -> Html<String> {
+    let app_repository = AppRepository::new(state.db.clone());
+    let app_service = AppService::new(app_repository);
+
+    match app_service.find_by_id(&id).await {
+        Ok(app) => {
+            let context = tera::Context::from_serialize(app).unwrap();
+            Html(state.tera.render("apps/index.html", &context).unwrap())
+        }
+        Err(_) => Html("".to_string()),
+    }
+}
+
+pub async fn create_new_page(
     State(state): State<Arc<AppState>>,
     Path(id): Path<i64>,
 ) -> Html<String> {
@@ -50,34 +54,7 @@ pub async fn new_page_html(
     }
 }
 
-pub async fn app_html(State(state): State<Arc<AppState>>, Path(id): Path<i64>) -> Html<String> {
-    let app_repository = AppRepository::new(state.db.clone());
-    let app_service = AppService::new(app_repository);
-
-    match app_service.find_by_id(&id).await {
-        Ok(app) => {
-            let context = tera::Context::from_serialize(app).unwrap();
-            Html(state.tera.render("apps/index.html", &context).unwrap())
-        }
-        Err(_) => Html("".to_string()),
-    }
-}
-
-pub async fn find_by_id(
-    State(state): State<Arc<AppState>>,
-    Path(id): Path<i64>,
-) -> impl IntoResponse {
-    let app_repository = AppRepository::new(state.db.clone());
-    let app_service = AppService::new(app_repository);
-
-    match app_service.find_by_id(&id).await {
-        Ok(app) => Json(app).into_response(),
-        Err(sqlx::Error::RowNotFound) => StatusCode::NOT_FOUND.into_response(),
-        Err(_) => StatusCode::INTERNAL_SERVER_ERROR.into_response(),
-    }
-}
-
-pub async fn search(
+pub async fn search_results(
     State(state): State<Arc<AppState>>,
     Query(params): Query<AppSearch>,
 ) -> Html<String> {
@@ -85,6 +62,7 @@ pub async fn search(
     let app_service = AppService::new(app_repository);
     let mut context = Context::new();
 
+    // If the search name is empty, return an empty list of apps
     if params.name.trim().is_empty() {
         context.insert("apps", &Vec::<App>::new());
         return Html("".to_string());
@@ -96,33 +74,9 @@ pub async fn search(
     Html(
         state
             .tera
-            .render("apps/_search_autofill.html", &context)
+            .render("apps/search_results.html", &context)
             .unwrap(),
     )
-}
-
-pub async fn find_pages_by_app_id(
-    State(state): State<Arc<AppState>>,
-    Path(id): Path<String>,
-) -> impl IntoResponse {
-    let app_repository = AppRepository::new(state.db.clone());
-    let app_service = AppService::new(app_repository);
-
-    match app_service.find_pages_by_app_id(&id).await {
-        Ok(pages) => Json(pages).into_response(),
-        Err(sqlx::Error::RowNotFound) => StatusCode::NOT_FOUND.into_response(),
-        Err(_) => StatusCode::INTERNAL_SERVER_ERROR.into_response(),
-    }
-}
-
-pub async fn create_app(State(state): State<Arc<AppState>>) -> impl IntoResponse {
-    let app_repository = AppRepository::new(state.db.clone());
-    let app_service = AppService::new(app_repository);
-
-    match app_service.create_app("home").await {
-        Ok(_) => StatusCode::CREATED.into_response(),
-        Err(_) => StatusCode::INTERNAL_SERVER_ERROR.into_response(),
-    }
 }
 
 pub async fn delete_app(
