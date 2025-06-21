@@ -256,3 +256,35 @@ table tbody td {
 .text-right {
   text-align: right;
 }
+
+button.button,
+a.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background-color: white;
+  color: #252525;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+  font-size: 0.9rem;
+  border: 1px solid #252525;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+a.button:hover {
+  background: #252525;
+  color: white;
+}
+
+a.black {
+  color: #252525;
+}
+
+.badge {
+  background: #252525;
+  color: white;
+  font-size: 0.9rem;
+  padding: 2px 6px;
+}

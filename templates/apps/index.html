@@ -11,9 +11,14 @@
       style="display: flex; flex-direction: column; gap: 8px"
     >
       <section>
-        <h1>
+        <h1 style="display: inline-flex; gap: 10px; align-items: center">
           {{ app.name }}
-          <a href="{{ app.url }}" target="_blank" rel="noopener noreferrer">
+          <a
+            class="black"
+            href="{{ app.url }}"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <span class="screen-reader">Open in new tab</span>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -34,11 +39,28 @@
       </section>
       <section>
         <h2>Pages</h2>
-        <p>
-          These are the pages that you have defined in {{ app.name }}. Click on
-          a page to manage it.
-        </p>
         {% if pages|length > 0 %}
+        <p>
+          You can manage the pages of this application here. Pages are
+          individual sections of your application that can be used to display
+          different content.
+        </p>
+        <div style="display: flex; justify-content: end; margin-bottom: 8px">
+          <a href="/apps/{{ app.id }}/pages/new" class="button">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"
+              />
+            </svg>
+            Add Page
+          </a>
+        </div>
         <table>
           <thead>
             <tr>
@@ -58,9 +80,16 @@
             </tr>
             {% endfor %}
           </tbody>
+          <caption style="caption-side: bottom; text-align: right; font-size: 0.9rem;">
+            <p class="muted">
+              Total items: {{ pages|length }}
+            </p>
         </table>
         {% else %}
-        <p>This application has no pages yet.</p>
+        <p>
+          This application has no pages yet. You can
+          <a href="">create one here</a>.
+        </p>
         {% endif %}
       </section>
     </main>
