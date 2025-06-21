@@ -13,6 +13,4 @@ slug = "0.1.6"
 sqlx = { version = "0.8.6", features = ["sqlite", "runtime-tokio-native-tls", "chrono"] }
 tera = "1.20.0"
 tokio = { version = "1", features = ["full"] }
-utoipa = "5.4.0"
-utoipa-swagger-ui = { version = "9.0.2", features = ["axum"] }
 tower-http = { version = "0.6.6", features = ["fs", "set-header", "compression-full"] }

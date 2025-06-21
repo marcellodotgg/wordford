@@ -1,9 +1,8 @@
 use serde::{Deserialize, Serialize};
-use utoipa::ToSchema;
 
 use crate::models::page::Page;
 
-#[derive(Deserialize, Serialize, Debug, ToSchema)]
+#[derive(Deserialize, Serialize, Debug)]
 pub struct App {
     pub id: i64,
     pub name: String,
@@ -13,13 +12,13 @@ pub struct App {
     pub updated_at: String,
 }
 
-#[derive(Deserialize, Serialize, Debug, ToSchema)]
+#[derive(Deserialize, Serialize, Debug)]
 pub struct AppWithPages {
     pub app: App,
     pub pages: Vec<Page>,
 }
 
-#[derive(Deserialize, Serialize, Debug, ToSchema)]
+#[derive(Deserialize, Serialize, Debug)]
 pub struct AppSearch {
     pub name: String,
 }

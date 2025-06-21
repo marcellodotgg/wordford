@@ -1,11 +1,8 @@
+use crate::models::content::Content;
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
-use serde::{Deserialize, Serialize};
-use utoipa::ToSchema;
-
-use crate::models::content::Content;
-
-#[derive(Deserialize, Serialize, ToSchema, Debug)]
+#[derive(Deserialize, Serialize, Debug)]
 pub struct Page {
     pub id: i64,
     pub app_id: i64,
@@ -14,13 +11,13 @@ pub struct Page {
     pub updated_at: String,
 }
 
-#[derive(Deserialize, Serialize, ToSchema, Debug)]
+#[derive(Deserialize, Serialize, Debug)]
 pub struct PageWithContent {
     pub page: Page,
     pub content: Vec<Content>,
 }
 
-#[derive(Deserialize, Serialize, ToSchema, Debug)]
+#[derive(Deserialize, Serialize, Debug)]
 pub struct NewPageRequest {
     pub app_id: i64,
     pub name: String,

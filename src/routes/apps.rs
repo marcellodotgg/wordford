@@ -63,18 +63,6 @@ pub async fn app_html(State(state): State<Arc<AppState>>, Path(id): Path<i64>) -
     }
 }
 
-#[utoipa::path(
-    get,
-    path = "/api/apps/{id}",
-    responses(
-        (status = 200, description = "Get app by ID", body = String),
-        (status = 404, description = "Not found")
-    ),
-    params(
-        ("id" = i64, Path, description = "App ID")
-    ),
-    tag = "Apps"
-)]
 pub async fn find_by_id(
     State(state): State<Arc<AppState>>,
     Path(id): Path<i64>,
@@ -89,18 +77,6 @@ pub async fn find_by_id(
     }
 }
 
-#[utoipa::path(
-    get,
-    path = "/api/apps/search",
-    params(
-        ("name" = String, Query, description = "Name to search for"),
-    ),
-    responses(
-        (status = 200, description = "Get app by search criteria", content_type = "text/html", body = String),
-        (status = 404, description = "Not found")
-    ),
-    tag = "Apps"
-)]
 pub async fn search(
     State(state): State<Arc<AppState>>,
     Query(params): Query<AppSearch>,
@@ -125,18 +101,6 @@ pub async fn search(
     )
 }
 
-#[utoipa::path(
-    get,
-    path = "/api/apps/{id}/pages",
-    responses(
-        (status = 200, description = "Get pages by app ID", body = String),
-        (status = 404, description = "Not found")
-    ),
-    params(
-        ("id" = i64, Path, description = "App ID")
-    ),
-    tag = "Apps"
-)]
 pub async fn find_pages_by_app_id(
     State(state): State<Arc<AppState>>,
     Path(id): Path<String>,
@@ -151,15 +115,6 @@ pub async fn find_pages_by_app_id(
     }
 }
 
-#[utoipa::path(
-    put,
-    path = "/api/apps",
-    responses(
-        (status = 201, description = "Apps created"),
-        (status = 500, description = "Internal server error")
-    ),
-    tag = "Apps"
-)]
 pub async fn create_app(State(state): State<Arc<AppState>>) -> impl IntoResponse {
     let app_repository = AppRepository::new(state.db.clone());
     let app_service = AppService::new(app_repository);
@@ -170,18 +125,6 @@ pub async fn create_app(State(state): State<Arc<AppState>>) -> impl IntoResponse
     }
 }
 
-#[utoipa::path(
-    delete,
-    path = "/api/apps/{id}",
-    responses(
-        (status = 204, description = "App deleted"),
-        (status = 404, description = "Not found")
-    ),
-    params(
-        ("id" = i64, Path, description = "App ID")
-    ),
-    tag = "Apps"
-)]
 pub async fn delete_app(
     State(state): State<Arc<AppState>>,
     Path(id): Path<String>,

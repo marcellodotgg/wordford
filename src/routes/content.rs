@@ -9,7 +9,7 @@ use axum::{
 use std::sync::Arc;
 
 use crate::AppState;
-use crate::models::content::{Content, NewContentRequest};
+use crate::models::content::NewContentRequest;
 use crate::repositories::content::ContentRepository;
 use crate::services::content::ContentService;
 
@@ -23,18 +23,6 @@ pub fn routes() -> Router<Arc<AppState>> {
     Router::new().nest("/api/content", api_routes())
 }
 
-#[utoipa::path(
-    get,
-    path = "/api/content/{id}",
-    responses(
-        (status = 200, description = "Get content as JSON", body = Content),
-        (status = 404, description = "Not found")
-    ),
-    params(
-        ("id" = i64, Path, description = "The content ID")
-    ),
-    tag = "Content"
-)]
 pub async fn find_by_id(
     State(state): State<Arc<AppState>>,
     Path(id): Path<String>,
@@ -49,16 +37,6 @@ pub async fn find_by_id(
     }
 }
 
-#[utoipa::path(
-    put,
-    path = "/api/content",
-    request_body = NewContentRequest,
-    responses(
-        (status = 201, description = "Content created", body = Content),
-        (status = 409, description = "Conflict")
-    ),
-    tag = "Content"
-)]
 pub async fn create_content(
     State(state): State<Arc<AppState>>,
     Json(request): Json<NewContentRequest>,
@@ -86,18 +64,6 @@ pub async fn create_content(
     }
 }
 
-#[utoipa::path(
-    delete,
-    path = "/api/content/{id}",
-    responses(
-        (status = 204, description = "Content deleted"),
-        (status = 404, description = "Not found")
-    ),
-    params(
-        ("id" = i64, Path, description = "The content ID"),
-    ),
-    tag = "Content"
-)]
 pub async fn delete_content(
     State(state): State<Arc<AppState>>,
     Path(id): Path<i64>,

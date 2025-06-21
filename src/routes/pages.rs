@@ -22,18 +22,6 @@ pub fn routes() -> Router<Arc<AppState>> {
     Router::new().nest("/api/pages", api_routes())
 }
 
-#[utoipa::path(
-    get,
-    path = "/api/pages/{id}",
-    responses(
-        (status = 200, description = "Get page by ID", body = String),
-        (status = 404, description = "Not found")
-    ),
-    params(
-        ("id" = i64, Path, description = "Page ID")
-    ),
-    tag = "Pages"
-)]
 pub async fn find_page_by_id(
     State(state): State<Arc<AppState>>,
     Path(id): Path<i64>,
@@ -48,18 +36,6 @@ pub async fn find_page_by_id(
     }
 }
 
-#[utoipa::path(
-    get,
-    path = "/api/pages/{id}/content",
-    responses(
-        (status = 200, description = "Get content by Page ID", body = String),
-        (status = 404, description = "Not found")
-    ),
-    params(
-        ("id" = i64, Path, description = "Page ID")
-    ),
-    tag = "Pages"
-)]
 pub async fn get_content_for_page(
     State(state): State<Arc<AppState>>,
     Path(id): Path<i64>,
@@ -74,16 +50,6 @@ pub async fn get_content_for_page(
     }
 }
 
-#[utoipa::path(
-    put,
-    path = "/api/pages",
-    request_body(
-        content = NewPageRequest,
-        content_type = "application/x-www-form-urlencoded",
-        description = "Form data for creating a new page"
-    ),
-    tag = "Pages"
-)]
 pub async fn create_page(
     State(state): State<Arc<AppState>>,
     Form(request): Form<NewPageRequest>,
@@ -122,18 +88,6 @@ pub async fn create_page(
     }
 }
 
-#[utoipa::path(
-    delete,
-    path = "/api/pages/{id}",
-    responses(
-        (status = 204, description = "Page deleted"),
-        (status = 404, description = "Not found")
-    ),
-    params(
-        ("id" = i64, Path, description = "Page ID")
-    ),
-    tag = "Pages"
-)]
 pub async fn delete_page(
     State(state): State<Arc<AppState>>,
     Path(id): Path<String>,

@@ -7,34 +7,10 @@ use std::{env, sync::Arc};
 use tera::Tera;
 use tower_http::services::ServeDir;
 use tower_http::set_header::SetResponseHeaderLayer;
-use utoipa::OpenApi;
-use utoipa_swagger_ui::SwaggerUi;
 use wordford::{
     AppState,
     routes::{self, homepage},
 };
-
-#[derive(OpenApi)]
-#[openapi(
-    paths(
-        routes::content::find_by_id,
-        routes::content::create_content,
-        routes::content::delete_content,
-        routes::pages::find_page_by_id,
-        routes::pages::get_content_for_page,
-        routes::pages::create_page,
-        routes::pages::delete_page,
-        routes::apps::find_by_id,
-        routes::apps::find_pages_by_app_id,
-        routes::apps::create_app,
-        routes::apps::delete_app,
-        routes::apps::search
-    ),
-    tags(
-        (name = "Content Management", description = "Content management endpoints"),
-    )
-)]
-struct ApiDoc;
 
 #[tokio::main]
 async fn main() {
@@ -60,7 +36,6 @@ async fn main() {
         .merge(routes::content::routes())
         .merge(routes::pages::routes())
         .merge(routes::apps::routes())
-        .merge(SwaggerUi::new("/swagger-ui").url("/api-docs/openapi.json", ApiDoc::openapi()))
         .with_state(state);
 
     // Run the server
