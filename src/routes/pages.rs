@@ -109,7 +109,7 @@ pub async fn create_page(
 
     match result {
         Ok(page) => (
-            [("HX-Redirect", format!("/apps/{}", page.app_id))],
+            [("HX-Redirect", format!("/pages/{}", page.id))],
             StatusCode::OK,
         )
             .into_response(),
