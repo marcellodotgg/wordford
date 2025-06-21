@@ -7,9 +7,16 @@
   <body>
     {% include "shared/navbar.html" %}
     <main class="container">
-      <a href="/apps/{{ app.id }}" class="back-link">
-        &larr; Back to {{ app.name }}
-      </a>
+      <ul class="breadcrumbs">
+        <li>
+          <a href="/apps/{{ app.id }}" class="back-link black">
+            {{ app.name }}
+          </a>
+        </li>
+        <li>
+          <strong>Create Page</strong>
+        </li>
+      </ul>
       <h1 class="my-8">Create a new Page in {{ app.name }}</h1>
       {% include "apps/new_page_form.html" %}
     </main>

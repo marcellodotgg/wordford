@@ -1,14 +1,12 @@
 <form
-  hx-put="/api/pages"
+  hx-put="/pages"
   hx-trigger="submit"
   hx-target="this"
   hx-swap="outerHTML"
   style="display: flex; flex-direction: column; gap: 16px"
 >
   {% if error %}
-  <div class="error">
-    <p>{{ error }}</p>
-  </div>
+  <div class="banner error">{{ error }}</div>
   {% endif %}
   <div class="form-group">
     <label for="name">Page Name</label>
