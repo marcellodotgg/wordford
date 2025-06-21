@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Wordford | Create a Page</title>
+    {% include "shared/head.html" %}
+  </head>
+  <body>
+    {% include "shared/navbar.html" %}
+    <main class="container">
+      <a href="/apps/{{ app.id }}" class="back-link">
+        &larr; Back to {{ app.name }}
+      </a>
+      <h1 class="my-8">Create a new Page in {{ app.name }}</h1>
+      {% include "apps/new_page_form.html" %}
+    </main>
+    {% include "shared/footer.html" %}
+  </body>
+</html>

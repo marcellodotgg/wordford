@@ -1,0 +1,37 @@
+<form
+  hx-put="/api/pages"
+  hx-trigger="submit"
+  hx-target="this"
+  hx-swap="outerHTML"
+  style="display: flex; flex-direction: column; gap: 16px"
+>
+  {% if error %}
+  <div class="error">
+    <p>{{ error }}</p>
+  </div>
+  {% endif %}
+  <div class="form-group">
+    <label for="name">Page Name</label>
+    <input
+      type="text"
+      id="name"
+      name="name"
+      placeholder="Enter page name"
+      required
+      minlength="3"
+      maxlength="30"
+      {%
+      if
+      page.name
+      %}value="{{ page.name }}"
+      {%
+      endif
+      %}
+      autocomplete="off"
+    />
+  </div>
+  <input type="hidden" name="app_id" value="{{ app.id }}" />
+  <div>
+    <button type="submit" class="button">Create Page</button>
+  </div>
+</form>

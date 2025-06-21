@@ -23,13 +23,31 @@ fn api_routes() -> Router<Arc<AppState>> {
 }
 
 fn html_routes() -> Router<Arc<AppState>> {
-    Router::new().route("/{id}", get(app_html))
+    Router::new()
+        .route("/{id}", get(app_html))
+        .route("/{id}/pages/new", get(new_page_html))
 }
 
 pub fn routes() -> Router<Arc<AppState>> {
     Router::new()
         .nest("/api/apps", api_routes())
         .nest("/apps", html_routes())
+}
+
+pub async fn new_page_html(
+    State(state): State<Arc<AppState>>,
+    Path(id): Path<i64>,
+) -> Html<String> {
+    let app_repository = AppRepository::new(state.db.clone());
+    let app_service = AppService::new(app_repository);
+
+    match app_service.find_by_id(&id).await {
+        Ok(app) => {
+            let context = tera::Context::from_serialize(app).unwrap();
+            Html(state.tera.render("apps/new_page.html", &context).unwrap())
+        }
+        Err(_) => Html("".to_string()),
+    }
 }
 
 pub async fn app_html(State(state): State<Arc<AppState>>, Path(id): Path<i64>) -> Html<String> {

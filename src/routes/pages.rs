@@ -3,10 +3,10 @@ use crate::{
     services::pages::PageService,
 };
 use axum::{
-    Json, Router,
+    Form, Json, Router,
     extract::{Path, State},
     http::StatusCode,
-    response::IntoResponse,
+    response::{Html, IntoResponse},
     routing::{get, put},
 };
 use std::sync::Arc;
@@ -77,23 +77,48 @@ pub async fn get_content_for_page(
 #[utoipa::path(
     put,
     path = "/api/pages",
-    request_body = NewPageRequest,
-    responses(
-        (status = 201, description = "Page created"),
-        (status = 500, description = "Internal server error")
+    request_body(
+        content = NewPageRequest,
+        content_type = "application/x-www-form-urlencoded",
+        description = "Form data for creating a new page"
     ),
     tag = "Pages"
 )]
 pub async fn create_page(
     State(state): State<Arc<AppState>>,
-    Json(request): Json<NewPageRequest>,
+    Form(request): Form<NewPageRequest>,
 ) -> impl IntoResponse {
     let page_repository = PageRepository::new(state.db.clone());
     let page_service = PageService::new(page_repository);
 
-    match page_service.create_page(request).await {
-        Ok(_) => StatusCode::CREATED.into_response(),
-        Err(_) => StatusCode::INTERNAL_SERVER_ERROR.into_response(),
+    let mut context = tera::Context::new();
+    context.insert("app", &serde_json::json!({ "id": request.app_id }));
+    context.insert("page", &request);
+
+    let result = page_service.create_page(request).await;
+    let mut error_message = |msg| {
+        context.insert("error", &msg);
+        Html(
+            state
+                .tera
+                .render("apps/new_page_form.html", &context)
+                .unwrap(),
+        )
+    };
+
+    match result {
+        Ok(page) => (
+            [("HX-Redirect", format!("/apps/{}", page.app_id))],
+            StatusCode::OK,
+        )
+            .into_response(),
+        Err(sqlx::Error::Database(err)) if err.is_unique_violation() => {
+            error_message("Page name already exists for this app.").into_response()
+        }
+        Err(sqlx::Error::Database(err)) if err.is_foreign_key_violation() => {
+            error_message("The provided App ID is not valid.").into_response()
+        }
+        Err(_) => error_message("Something went wrong creating the page.").into_response(),
     }
 }
 

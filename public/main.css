@@ -80,7 +80,7 @@ nav ul li img {
 
 nav ul input[type="text"] {
   border: 1px solid #aaa;
-  background: #f1f1f1;
+  background: #f8f8f8;
   padding: 6px 8px;
   width: 190px;
   transition-duration: 300ms;
@@ -234,7 +234,7 @@ h2 {
 .container {
   margin: 0 auto;
   width: 80%;
-  max-width: 996px;
+  max-width: 776px;
 }
 
 table {
@@ -269,13 +269,15 @@ a.button {
   transition: background-color 0.3s ease;
   font-size: 0.9rem;
   border: 1px solid #252525;
-  font-weight: 800;
+  font-weight: 600;
   line-height: 1.4;
 }
 
+button.button:hover,
 a.button:hover {
   background: #252525;
   color: white;
+  cursor: pointer;
 }
 
 a.black {
@@ -287,4 +289,54 @@ a.black {
   color: white;
   font-size: 0.9rem;
   padding: 2px 6px;
+}
+
+.mt-8 {
+  margin-top: 8px;
+}
+
+.mb-8 {
+  margin-bottom: 8px;
+}
+
+.my-8 {
+  margin: 8px 0;
+}
+
+.mb-16 {
+  margin-bottom: 16px;
+}
+
+form .form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+form .form-group label {
+  font-weight: 600;
+  margin-bottom: 2px;
+  font-size: 0.9rem;
+}
+
+form input[type="text"],
+form input[type="email"] {
+  padding: 6px 8px;
+  border: 1px solid #aaa;
+  background: #f8f8f8;
+  width: 100%;
+  transition-duration: 300ms;
+}
+
+form input {
+  font-size: 1rem;
+}
+
+form input[type="text"]::placeholder,
+form input[type="email"]::placeholder {
+  color: #444;
+}
+
+form input:focus {
+  outline: none;
+  border: 1px solid #252525;
 }

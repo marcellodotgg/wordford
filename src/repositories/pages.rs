@@ -1,3 +1,4 @@
+use slug::slugify;
 use sqlx::Error::RowNotFound;
 use sqlx::SqlitePool;
 
@@ -99,10 +100,11 @@ impl PageRepository {
             .await
     }
 
-    pub async fn create_page(&self, page: NewPageRequest) -> Result<Page, sqlx::Error> {
+    pub async fn create_page(&self, mut page: NewPageRequest) -> Result<Page, sqlx::Error> {
+        page.name = slugify(&page.name).replace("-", "_");
         let record = sqlx::query!(
             r#"
-            INSERT INTO pages (app_id, name) VALUES (?, ?)
+            INSERT INTO pages (app_id, name) VALUES (?, LOWER(?))
             RETURNING id, app_id, name, created_at, updated_at
             "#,
             page.app_id,
