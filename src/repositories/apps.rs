@@ -1,9 +1,8 @@
-use sqlx::SqlitePool;
-
 use crate::models::{
-    app::{App, AppWithPages},
+    app::{App, AppWithPages, CreateAppForm},
     page::Page,
 };
+use sqlx::SqlitePool;
 
 pub struct AppRepository {
     db: SqlitePool,
@@ -99,17 +98,27 @@ impl AppRepository {
             .collect())
     }
 
-    pub async fn create_app(&self, name: &str) -> Result<String, sqlx::Error> {
-        sqlx::query!(
+    pub async fn create_app(&self, request: CreateAppForm) -> Result<App, sqlx::Error> {
+        let app = sqlx::query!(
             r#"
-            INSERT INTO apps (name) VALUES (?)
+            INSERT INTO apps (name, description, url) VALUES (?, ?, ?)
+            RETURNING *
             "#,
-            name
+            request.name,
+            request.description,
+            request.url
         )
-        .execute(&self.db)
+        .fetch_one(&self.db)
         .await?;
 
-        Ok("success".to_string()) // TODO: should return the created app ID
+        Ok(App {
+            id: app.id,
+            name: request.name,
+            description: request.description,
+            url: request.url,
+            created_at: app.created_at.to_string(),
+            updated_at: app.updated_at.to_string(),
+        })
     }
 
     pub async fn delete_app(&self, id: &str) -> Result<(), sqlx::Error> {

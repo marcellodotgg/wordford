@@ -22,3 +22,10 @@ pub struct AppWithPages {
 pub struct AppSearch {
     pub name: String,
 }
+
+#[derive(Deserialize, Serialize, Debug)]
+pub struct CreateAppForm {
+    pub name: String,
+    pub description: String,
+    pub url: String,
+}

@@ -1,16 +1,16 @@
 use axum::{
-    Router,
+    Form, Router,
     extract::{Path, Query, State},
     http::StatusCode,
     response::{Html, IntoResponse},
-    routing::get,
+    routing::{get, put},
 };
 use std::sync::Arc;
 use tera::Context;
 
 use crate::{
     AppState,
-    models::app::{App, AppSearch},
+    models::app::{App, AppSearch, CreateAppForm},
     repositories::apps::AppRepository,
     services::apps::AppService,
 };
@@ -19,6 +19,8 @@ pub fn routes() -> Router<Arc<AppState>> {
     Router::new().nest(
         "/apps",
         Router::new()
+            .route("/", put(create_app))
+            .route("/new", get(create_app_html))
             .route("/{id}", get(index))
             .route("/{id}/pages/new", get(create_new_page))
             .route("/search", get(search_results)),
@@ -36,6 +38,24 @@ pub async fn index(State(state): State<Arc<AppState>>, Path(id): Path<i64>) -> H
         }
         Err(_) => Html("".to_string()),
     }
+}
+
+pub async fn create_app(
+    State(state): State<Arc<AppState>>,
+    Form(request): Form<CreateAppForm>,
+) -> impl IntoResponse {
+    let app_repository = AppRepository::new(&state.db);
+    let app_service = AppService::new(app_repository);
+
+    match app_service.create_app(request).await {
+        Ok(app) => [("HX-Redirect", format!("/apps/{}", app.id))].into_response(),
+        Err(_) => StatusCode::INTERNAL_SERVER_ERROR.into_response(),
+    }
+}
+
+pub async fn create_app_html(State(state): State<Arc<AppState>>) -> Html<String> {
+    let context = Context::new();
+    Html(state.tera.render("apps/new.html", &context).unwrap())
 }
 
 pub async fn create_new_page(

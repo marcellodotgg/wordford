@@ -145,6 +145,7 @@ nav .search-results ul {
   overflow-y: auto;
   height: fit-content;
   line-height: 1.5;
+  border-top: 0;
 }
 
 div {
@@ -181,6 +182,10 @@ nav .search-results ul li p.muted {
   font-size: 0.9rem;
 }
 
+nav .search-results ul li:not(:first-child) {
+  border-top: 1px solid #252525;
+}
+
 nav .search-results ul a:link,
 nav .search-results ul a:active,
 nav .search-results ul a:visited {
@@ -193,7 +198,7 @@ nav .search-results ul a:visited {
 
 nav .search-results ul a:focus,
 nav .search-results ul a:hover {
-  background: #f1f1f1;
+  background: #fffff4;
   outline: none;
 }
 

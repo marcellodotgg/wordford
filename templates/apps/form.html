@@ -1,0 +1,36 @@
+<form
+  hx-put="/apps"
+  hx-trigger="submit"
+  hx-swap="outerHTML"
+  style="display: flex; flex-direction: column; gap: 16px"
+>
+  <div class="form-group">
+    <label for="name">Name</label>
+    <input
+      type="text"
+      id="name"
+      name="name"
+      placeholder="Enter name"
+      required
+    />
+  </div>
+
+  <div class="form-group">
+    <label for="url">Url</label>
+    <input type="text" id="url" name="url" placeholder="Enter App URL" />
+  </div>
+
+  <div class="form-group">
+    <label for="description">Description</label>
+    <textarea
+      id="description"
+      name="description"
+      placeholder="Enter a description"
+      required
+    ></textarea>
+  </div>
+
+  <div>
+    <button type="submit" class="button">Create App</button>
+  </div>
+</form>

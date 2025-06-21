@@ -1,6 +1,6 @@
 use crate::{
     models::{
-        app::{App, AppSearch, AppWithPages},
+        app::{App, AppSearch, AppWithPages, CreateAppForm},
         page::Page,
     },
     repositories::apps::AppRepository,
@@ -27,8 +27,8 @@ impl AppService {
         self.app_repository.find_pages_by_app_id(app_id).await
     }
 
-    pub async fn create_app(&self, name: &str) -> Result<String, sqlx::Error> {
-        self.app_repository.create_app(name).await
+    pub async fn create_app(&self, request: CreateAppForm) -> Result<App, sqlx::Error> {
+        self.app_repository.create_app(request).await
     }
 
     pub async fn delete_app(&self, app_id: &str) -> Result<(), sqlx::Error> {
