@@ -40,10 +40,10 @@ INSERT INTO apps (name, description, url)
 VALUES ('Wordford', 'The primary CMS for the Wordford application.', 'https://wordford.com');
 -- create a dummy page for the example app
 INSERT INTO pages (app_id, name)
-VALUES ((SELECT id FROM apps WHERE name = 'Wordford'), 'wordford');
+VALUES ((SELECT id FROM apps WHERE name = 'Wordford'), 'homepage');
 -- create a dummy content for the example page
 INSERT INTO content (page_id, name, body)
-VALUES ((SELECT id FROM pages WHERE name = 'wordford'), 'homepage_content', "<h2>Welcome to Wordford!</h2>
+VALUES ((SELECT id FROM pages WHERE name = 'homepage'), 'homepage_content', "<h2>Welcome to Wordford!</h2>
       <p>
         Wordford is a simple web application that allows you to create and
         manage your own word lists.
@@ -57,5 +57,3 @@ VALUES ((SELECT id FROM pages WHERE name = 'wordford'), 'homepage_content', "<h2
           <li>Share your word lists with others</li>
         </ul>
 </section>");
-INSERT INTO content (page_id, name, body)
-VALUES ((SELECT id FROM pages WHERE name = 'wordford'), 'footer_content', "<p>&copy; Wordford. All rights reserved.</p>");

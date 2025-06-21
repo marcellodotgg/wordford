@@ -23,9 +23,10 @@ impl PageService {
     pub async fn get_content_for_page_name(
         &self,
         page_name: &str,
+        app_id: i64,
     ) -> Result<PageContent, sqlx::Error> {
         self.page_repository
-            .get_content_for_page_name(page_name)
+            .get_content_for_page_name(page_name, app_id)
             .await
     }
 

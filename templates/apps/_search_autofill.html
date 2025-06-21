@@ -1,7 +1,7 @@
 <ul id="search_autofill">
   {% if apps|length > 0 %} {% for app in apps %}
   <li>
-    <a href="">
+    <a href="/apps/{{ app.id }}">
       <p class="title">
         <strong>{{ app.name }}</strong>
       </p>

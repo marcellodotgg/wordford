@@ -79,12 +79,14 @@ impl PageRepository {
     pub async fn get_content_for_page_name(
         &self,
         page_name: &str,
+        app_id: i64,
     ) -> Result<PageContent, sqlx::Error> {
         let page = sqlx::query!(
             r#"
-            SELECT id FROM pages WHERE name = ?
+            SELECT id FROM pages WHERE name = ? AND app_id = ?
             "#,
-            page_name
+            page_name,
+            app_id
         )
         .fetch_one(&self.db)
         .await?;

@@ -14,7 +14,7 @@ impl AppRepository {
         AppRepository { db }
     }
 
-    pub async fn find_by_id(&self, id: &str) -> Result<AppWithPages, sqlx::Error> {
+    pub async fn find_by_id(&self, id: &i64) -> Result<AppWithPages, sqlx::Error> {
         let app = sqlx::query!(
             r#"
             SELECT * FROM apps WHERE id = ?

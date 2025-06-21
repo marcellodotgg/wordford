@@ -16,7 +16,7 @@ pub fn routes() -> Router<Arc<AppState>> {
 async fn homepage_index(State(state): State<Arc<AppState>>) -> impl IntoResponse {
     let page_service = PageService::new(PageRepository::new(state.db.clone()));
 
-    match page_service.get_content_for_page_name("wordford").await {
+    match page_service.get_content_for_page_name("homepage", 1).await {
         Ok(content) => {
             let context = match tera::Context::from_serialize(content) {
                 Ok(ctx) => ctx,

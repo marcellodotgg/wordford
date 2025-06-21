@@ -24,7 +24,16 @@ p {
 
 .muted {
   color: #555;
-  font-size: 0.9rem;
+}
+
+a:link,
+a:active,
+a:visited {
+  color: rgb(0, 81, 255);
+}
+
+.screen-reader {
+  display: none;
 }
 
 nav {
@@ -41,6 +50,11 @@ nav .container {
 
 nav h1 {
   font-size: 1.25rem;
+}
+
+nav a.brand {
+  text-decoration: none;
+  color: #252525;
 }
 
 nav ul {
@@ -164,6 +178,7 @@ nav .search-results ul li p.muted {
   overflow: hidden;
   -webkit-box-orient: vertical;
   text-overflow: ellipsis;
+  font-size: 0.9rem;
 }
 
 nav .search-results ul a:link,
@@ -208,8 +223,36 @@ h3 {
   line-height: 1.3;
 }
 
+h1 {
+  font-size: 1.5rem;
+}
+
+h2 {
+  font-size: 1.25rem;
+}
+
 .container {
   margin: 0 auto;
   width: 80%;
   max-width: 996px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table thead th {
+  text-align: left;
+  padding: 8px;
+  border-bottom: 1px solid #999;
+}
+
+table tbody td {
+  padding: 8px;
+  border-bottom: 1px solid #999;
+}
+
+.text-right {
+  text-align: right;
 }

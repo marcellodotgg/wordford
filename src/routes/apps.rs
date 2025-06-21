@@ -22,8 +22,27 @@ fn api_routes() -> Router<Arc<AppState>> {
         .route("/search", get(search))
 }
 
+fn html_routes() -> Router<Arc<AppState>> {
+    Router::new().route("/{id}", get(app_html))
+}
+
 pub fn routes() -> Router<Arc<AppState>> {
-    Router::new().nest("/api/apps", api_routes())
+    Router::new()
+        .nest("/api/apps", api_routes())
+        .nest("/apps", html_routes())
+}
+
+pub async fn app_html(State(state): State<Arc<AppState>>, Path(id): Path<i64>) -> Html<String> {
+    let app_repository = AppRepository::new(state.db.clone());
+    let app_service = AppService::new(app_repository);
+
+    match app_service.find_by_id(&id).await {
+        Ok(app) => {
+            let context = tera::Context::from_serialize(app).unwrap();
+            Html(state.tera.render("apps/index.html", &context).unwrap())
+        }
+        Err(_) => Html("".to_string()),
+    }
 }
 
 #[utoipa::path(
@@ -40,7 +59,7 @@ pub fn routes() -> Router<Arc<AppState>> {
 )]
 pub async fn find_by_id(
     State(state): State<Arc<AppState>>,
-    Path(id): Path<String>,
+    Path(id): Path<i64>,
 ) -> impl IntoResponse {
     let app_repository = AppRepository::new(state.db.clone());
     let app_service = AppService::new(app_repository);
