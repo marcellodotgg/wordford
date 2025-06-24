@@ -10,6 +10,7 @@ use tower_http::set_header::SetResponseHeaderLayer;
 use wordford::{
     AppState,
     routes::{self, homepage},
+    user,
 };
 
 #[tokio::main]
@@ -32,6 +33,7 @@ async fn main() {
     // Initialize the application state and routes
     let app = Router::new()
         .merge(serve_static)
+        .merge(user::routes::routes())
         .merge(homepage::routes())
         .merge(routes::content::routes())
         .merge(routes::pages::routes())
