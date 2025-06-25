@@ -1,6 +1,9 @@
 use crate::{
     AppState,
-    user::{CreateUserRequest, repository::UserRepository, service::UserService},
+    user::{
+        CreateUserRequest, SignInRequest, auth::AuthService, repository::UserRepository,
+        service::UserService,
+    },
 };
 use axum::{
     Form, Router,
@@ -14,6 +17,40 @@ pub fn routes() -> Router<Arc<AppState>> {
     Router::new()
         .nest("/users", Router::new().route("/", put(create_user)))
         .route("/signup", get(signup_html))
+        .route("/signin", get(signin_html).put(signin))
+}
+
+pub async fn signin_html(State(state): State<Arc<AppState>>) -> impl IntoResponse {
+    Html(
+        state
+            .tera
+            .render("auth/signin.html", &tera::Context::new())
+            .unwrap(),
+    )
+}
+
+pub async fn signin(
+    State(state): State<Arc<AppState>>,
+    Form(request): Form<SignInRequest>,
+) -> impl IntoResponse {
+    let auth_service = AuthService::new(state.db.clone());
+    let mut context = tera::Context::from_serialize(&request).unwrap();
+
+    let template = "auth/signin_form.html";
+    match auth_service.login(&request.email, &request.password).await {
+        Ok(true) => {
+            context.insert("success", "Login successful!");
+            state.tera.render(template, &context).unwrap()
+        }
+        Ok(false) => {
+            context.insert("error", "Invalid email or password. Please try again.");
+            state.tera.render(template, &context).unwrap()
+        }
+        Err(_) => {
+            context.insert("error", "An unexpected error occurred. Please try again.");
+            state.tera.render(template, &context).unwrap()
+        }
+    }
 }
 
 pub async fn create_user(
@@ -24,7 +61,8 @@ pub async fn create_user(
     let mut context = tera::Context::new();
 
     let template = "user/create_user_form.html";
-    let html = match user_service.create_user(&request).await {
+    let mut request = request.clone();
+    let html = match user_service.create_user(&mut request).await {
         Ok(_) => {
             context.insert("success", "Congratulations! You may now sign in.");
             state.tera.render(template, &context)

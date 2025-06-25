@@ -1,0 +1,47 @@
+<form
+  hx-put="/signin"
+  hx-swap="outerHTML"
+  hx-trigger="submit"
+  style="display: flex; flex-direction: column; gap: 16px"
+>
+  {% if error %}
+  <div class="banner error">{{ error }}</div>
+  {% elif success %}
+  <div class="banner success">{{ success }}</div>
+  {% endif %}
+  <div class="form-group">
+    <label for="email">E-mail address</label>
+    <input
+      id="email"
+      name="email"
+      type="email"
+      placeholder="Enter email"
+      autocomplete="email"
+      required
+      maxlength="254"
+      {%
+      if
+      email
+      %}
+      value="{{ email }}"
+      {%
+      endif
+      %}
+    />
+  </div>
+  <div class="form-group">
+    <label for="password">Password</label>
+    <input
+      id="password"
+      name="password"
+      type="password"
+      placeholder="Enter password"
+      autocomplete="new-password"
+      maxlength="50"
+      required
+    />
+  </div>
+  <div>
+    <button type="submit" class="button">Sign in</button>
+  </div>
+</form>

@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
 
+pub mod auth;
 pub mod repository;
 pub mod routes;
 pub mod service;
@@ -22,4 +23,10 @@ pub struct CreateUserRequest {
     pub password: String,
     pub given_name: String,
     pub family_name: String,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct SignInRequest {
+    pub email: String,
+    pub password: String,
 }

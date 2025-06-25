@@ -1,4 +1,4 @@
-use crate::user::{CreateUserRequest, User, repository::UserRepository};
+use crate::user::{CreateUserRequest, User, auth::hash_password, repository::UserRepository};
 
 pub struct UserService {
     repository: UserRepository,
@@ -13,7 +13,8 @@ impl UserService {
         self.repository.find_by_email(email).await
     }
 
-    pub async fn create_user(&self, request: &CreateUserRequest) -> Result<User, sqlx::Error> {
+    pub async fn create_user(&self, request: &mut CreateUserRequest) -> Result<User, sqlx::Error> {
+        request.password = hash_password(&request.password).await;
         self.repository.create_user(&request).await
     }
 }
