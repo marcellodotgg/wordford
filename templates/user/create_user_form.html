@@ -1,0 +1,59 @@
+<form
+  hx-put="/users"
+  hx-swap="outerHTML"
+  hx-trigger="submit"
+  style="display: flex; flex-direction: column; gap: 16px"
+>
+  {% if error %}
+  <div class="banner error">{{ error }}</div>
+  {% elif success %}
+  <div class="banner success">{{ success }}</div>
+  {% endif %}
+  <div class="form-group">
+    <label for="given_name">First name</label>
+    <input
+      id="given_name"
+      name="given_name"
+      type="text"
+      placeholder="Enter first name"
+      autocomplete="given-name"
+      required
+    />
+  </div>
+  <div class="form-group">
+    <label for="family_name">Last name</label>
+    <input
+      id="family_name"
+      name="family_name"
+      type="text"
+      placeholder="Enter last name"
+      autocomplete="family-name"
+      required
+    />
+  </div>
+  <div class="form-group">
+    <label for="email">E-mail address</label>
+    <input
+      id="email"
+      name="email"
+      type="email"
+      placeholder="Enter email"
+      autocomplete="email"
+      required
+    />
+  </div>
+  <div class="form-group">
+    <label for="password">Password</label>
+    <input
+      id="password"
+      name="password"
+      type="password"
+      placeholder="Enter password"
+      autocomplete="new-password"
+      required
+    />
+  </div>
+  <div>
+    <button type="submit" class="button">Create Account</button>
+  </div>
+</form>
