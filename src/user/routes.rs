@@ -30,10 +30,12 @@ pub async fn create_user(
             state.tera.render(template, &context)
         }
         Err(sqlx::Error::Database(err)) if err.is_unique_violation() => {
+            context = tera::Context::from_serialize(request).unwrap();
             context.insert("error", "Email already exists. Please try again.");
             state.tera.render(template, &context)
         }
         Err(_) => {
+            context = tera::Context::from_serialize(request).unwrap();
             context.insert("error", "An unexpected error occurred. Please try again.");
             state.tera.render(template, &context)
         }

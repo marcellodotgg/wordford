@@ -18,6 +18,15 @@
       placeholder="Enter first name"
       autocomplete="given-name"
       required
+      maxlength="20"
+      {%
+      if
+      given_name
+      %}
+      value="{{ given_name }}"
+      {%
+      endif
+      %}
     />
   </div>
   <div class="form-group">
@@ -29,6 +38,14 @@
       placeholder="Enter last name"
       autocomplete="family-name"
       required
+      maxlength="20"
+      {%
+      if
+      family_name
+      %}value="{{ family_name }}"
+      {%
+      endif
+      %}
     />
   </div>
   <div class="form-group">
@@ -40,6 +57,15 @@
       placeholder="Enter email"
       autocomplete="email"
       required
+      maxlength="254"
+      {%
+      if
+      email
+      %}
+      value="{{ email }}"
+      {%
+      endif
+      %}
     />
   </div>
   <div class="form-group">
@@ -50,6 +76,7 @@
       type="password"
       placeholder="Enter password"
       autocomplete="new-password"
+      maxlength="50"
       required
     />
   </div>
