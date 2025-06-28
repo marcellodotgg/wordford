@@ -45,14 +45,18 @@ impl UserRepository {
         &self,
         create_user_request: &CreateUserRequest,
     ) -> Result<User, sqlx::Error> {
-        const AVATAR_URL: &str = "http://localhost:3000/assets/images/critter-1.svg";
+        let critter_num = rand::random::<u8>() % 11 + 1;
+        let avatar_url = format!(
+            "http://localhost:3000/assets/images/critter_{}.svg",
+            critter_num
+        );
         let user = sqlx::query!(
             "INSERT INTO users (email, given_name, family_name, password_hash, avatar_url) VALUES (?, ?, ?, ?, ?)",
             create_user_request.email,
             create_user_request.given_name,
             create_user_request.family_name,
-            create_user_request.password, // TODO: Hash the password before storing it
-            AVATAR_URL
+            create_user_request.password,
+            avatar_url
         )
         .execute(&self.db)
         .await?;
@@ -62,7 +66,7 @@ impl UserRepository {
             email: create_user_request.email.to_string(),
             given_name: create_user_request.given_name.to_string(),
             family_name: create_user_request.family_name.to_string(),
-            avatar_url: AVATAR_URL.to_string(),
+            avatar_url: avatar_url,
             role: 1,
             created_at: chrono::Utc::now().to_string(),
             updated_at: chrono::Utc::now().to_string(),
