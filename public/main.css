@@ -78,6 +78,11 @@ nav ul li img {
   border: 1px solid #252525;
 }
 
+nav ul li a.button {
+  text-decoration: none;
+  color: #252525;
+}
+
 nav ul input[type="text"] {
   border: 1px solid #aaa;
   background: #f8f8f8;

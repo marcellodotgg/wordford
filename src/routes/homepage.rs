@@ -7,19 +7,28 @@ use axum::{
     routing::get,
 };
 
-use crate::{AppState, repositories::pages::PageRepository, services::pages::PageService};
+use crate::{
+    AppState, extractors::current_user::MaybeUser, repositories::pages::PageRepository,
+    services::pages::PageService,
+};
 
 pub fn routes() -> Router<Arc<AppState>> {
     Router::new().route("/", get(homepage_index))
 }
 
-async fn homepage_index(State(state): State<Arc<AppState>>) -> impl IntoResponse {
+async fn homepage_index(
+    MaybeUser(user): MaybeUser,
+    State(state): State<Arc<AppState>>,
+) -> impl IntoResponse {
     let page_service = PageService::new(PageRepository::new(&state.db));
 
     match page_service.get_content_for_page_name("homepage", 1).await {
         Ok(content) => {
             let context = match tera::Context::from_serialize(content) {
-                Ok(ctx) => ctx,
+                Ok(mut ctx) => {
+                    ctx.insert("user", &user);
+                    ctx
+                }
                 Err(_) => return Html("<h1>Error preparing context</h1>".to_string()),
             };
             match state.tera.render("homepage/index.html", &context) {

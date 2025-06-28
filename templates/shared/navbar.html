@@ -1,6 +1,7 @@
 <nav>
   <div class="container">
     <h1><a class="brand" href="/">Wordford</a></h1>
+    {% if user %}
     <ul>
       <li class="mobile-only">
         <svg
@@ -61,5 +62,11 @@
         </a>
       </li>
     </ul>
+    {% else %}
+    <ul>
+      <li><a href="/signin" class="button">Sign in</a></li>
+      <li><a href="/signup" class="button">Sign up</a></li>
+    </ul>
+    {%endif%}
   </div>
 </nav>

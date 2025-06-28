@@ -9,20 +9,24 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  wrapper.addEventListener("focusout", function () {
-    setTimeout(() => {
-      if (!wrapper.contains(document.activeElement)) {
-        clearSearch();
-      }
-    }, 0);
-  });
+  if (wrapper) {
+    wrapper.addEventListener("focusout", function () {
+      setTimeout(() => {
+        if (!wrapper.contains(document.activeElement)) {
+          clearSearch();
+        }
+      }, 0);
+    });
+  }
 
-  input.addEventListener("keydown", function (event) {
-    if (event.key === "Escape") {
-      clearSearch();
-      input.blur();
-    }
-  });
+  if (input) {
+    input.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") {
+        clearSearch();
+        input.blur();
+      }
+    });
+  }
 
   function clearSearch() {
     input.value = "";

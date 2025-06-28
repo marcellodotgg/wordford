@@ -9,6 +9,10 @@ impl UserService {
         UserService { repository }
     }
 
+    pub async fn find_user_by_id(&self, id: i64) -> Result<User, sqlx::Error> {
+        self.repository.find_by_id(id).await
+    }
+
     pub async fn find_user_by_email(&self, email: &str) -> Result<User, sqlx::Error> {
         self.repository.find_by_email(email).await
     }
