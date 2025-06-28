@@ -50,17 +50,16 @@ pub async fn signin(
                     .secure(true)
                     .max_age(Duration::days(365))
                     .build();
-
-                context.insert("success", "Login successful!");
-                let body = state.tera.render(template, &context).unwrap();
-
                 (
-                    [(
-                        SET_COOKIE,
-                        HeaderValue::from_str(&cookie.to_string())
-                            .expect("failed to convert cookie to string"),
-                    )],
-                    Html(body),
+                    [
+                        ("HX-Redirect", HeaderValue::from_static("/")),
+                        (
+                            SET_COOKIE.as_str(),
+                            HeaderValue::from_str(&cookie.to_string())
+                                .expect("failed to convert cookie to string"),
+                        ),
+                    ],
+                    (),
                 )
                     .into_response()
             }
