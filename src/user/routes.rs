@@ -8,10 +8,13 @@ use crate::{
 use axum::{
     Form, Router,
     extract::State,
+    http::{HeaderValue, header::SET_COOKIE},
     response::{Html, IntoResponse},
     routing::{get, put},
 };
+use axum_extra::extract::cookie::{Cookie, SameSite};
 use std::sync::Arc;
+use time::Duration;
 
 pub fn routes() -> Router<Arc<AppState>> {
     Router::new()
@@ -38,17 +41,45 @@ pub async fn signin(
 
     let template = "auth/signin_form.html";
     match auth_service.login(&request.email, &request.password).await {
-        Ok(true) => {
-            context.insert("success", "Login successful!");
-            state.tera.render(template, &context).unwrap()
-        }
-        Ok(false) => {
-            context.insert("error", "Invalid email or password. Please try again.");
-            state.tera.render(template, &context).unwrap()
-        }
+        Ok(token) => match token {
+            Some(token) => {
+                let cookie = Cookie::build(("auth_token", token))
+                    .path("/")
+                    .http_only(true)
+                    .same_site(SameSite::Lax)
+                    .secure(true)
+                    .max_age(Duration::days(365))
+                    .build();
+
+                context.insert("success", "Login successful!");
+                let body = state.tera.render(template, &context).unwrap();
+
+                (
+                    [(
+                        SET_COOKIE,
+                        HeaderValue::from_str(&cookie.to_string())
+                            .expect("failed to convert cookie to string"),
+                    )],
+                    Html(body),
+                )
+                    .into_response()
+            }
+            None => {
+                context.insert("error", "Invalid email or password. Please try again.");
+                state
+                    .tera
+                    .render(template, &context)
+                    .unwrap()
+                    .into_response()
+            }
+        },
         Err(_) => {
             context.insert("error", "An unexpected error occurred. Please try again.");
-            state.tera.render(template, &context).unwrap()
+            state
+                .tera
+                .render(template, &context)
+                .unwrap()
+                .into_response()
         }
     }
 }
